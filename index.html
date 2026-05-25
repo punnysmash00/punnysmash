@@ -47,9 +47,16 @@
     background:var(--paper);flex-shrink:0;
   }
   .brand-logo img{width:100%;height:100%;object-fit:cover;display:block}
-  .brand h1{font-family:'Archivo Black',sans-serif;font-size:22px;letter-spacing:.5px;margin:0;line-height:1}
-  .brand h1 span{color:var(--accent)}
-  .brand small{display:block;font-size:11px;color:var(--ink-soft);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+  .brand-text{display:flex;flex-direction:column;justify-content:center;min-width:0;flex:1}
+  .brand-scritta{
+    height:42px;
+    width:auto;
+    max-width:100%;
+    display:block;
+    object-fit:contain;
+    object-position:left center;
+  }
+  .brand small{display:block;font-size:10px;color:var(--ink-soft);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;font-weight:600}
 
   /* Sections */
   main{padding:18px}
@@ -251,8 +258,8 @@
     <div class="brand-logo">
       <img src="logo.png" alt="Punny Smash">
     </div>
-    <div>
-      <h1>Punny <span>Smash</span></h1>
+    <div class="brand-text">
+      <img src="scritta.png" alt="Punny Smash" class="brand-scritta">
       <small>Smash burger · ordina e ritira</small>
     </div>
   </div>
