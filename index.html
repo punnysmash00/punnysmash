@@ -109,16 +109,6 @@
   header.top.shrunk .brand-scritta{
     height:40px;
   }
-  .brand small{
-    display:block;font-size:10px;color:var(--ink-soft);
-    letter-spacing:1.5px;text-transform:uppercase;
-    margin-top:4px;font-weight:600;
-    max-height:20px;overflow:hidden;
-    transition: max-height .25s ease, margin-top .25s ease, opacity .2s ease;
-  }
-  header.top.shrunk .brand small{
-    max-height:0;margin-top:0;opacity:0;
-  }
 
   /* Sections */
   main{padding:18px}
@@ -315,6 +305,8 @@
 </head>
 <body>
 
+<div id="scrollSentinel" aria-hidden="true" style="position:absolute;top:0;left:0;width:1px;height:50px;pointer-events:none"></div>
+
 <header class="top">
   <div class="brand">
     <div class="brand-logo">
@@ -322,7 +314,6 @@
     </div>
     <div class="brand-text">
       <img src="scritta.png" alt="Punny Smash" class="brand-scritta">
-      <small>Smash burger · ordina e ritira</small>
     </div>
   </div>
 </header>
@@ -432,6 +423,19 @@
     <div class="note-box" id="riderBox" style="margin-top:10px">
       <label>Note per il rider <span style="font-weight:400;color:var(--ink-soft);font-size:11px;letter-spacing:.3px">(opzionale)</span></label>
       <textarea id="riderNote" rows="2" placeholder="es. piano 3, citofono Rossi, scala B"></textarea>
+    </div>
+  </div>
+
+  <h2 class="section-title">Orario <em>// quando</em></h2>
+  <div class="toggle-row" id="timeToggle">
+    <button data-time="adesso" class="on"><span class="icon">⚡</span>Adesso</button>
+    <button data-time="dopo"><span class="icon">🕒</span>Dopo</button>
+  </div>
+  <div id="timeWrap" style="display:none;margin-top:10px">
+    <div class="note-box required" id="timeBox">
+      <label>Orario richiesto</label>
+      <input id="timeWhen" type="time" />
+      <div class="field-warn" id="timeWarn">⚠ Inserisci l'orario per finalizzare l'ordine</div>
     </div>
   </div>
 
@@ -593,6 +597,7 @@ const state = {
   pattyciok: [],     // array of configured items: {filling, flavour, toppings:[], price}
   milkshakes: [],    // array of configured items: {base, toppings:[], price}
   mode: "consegna", address: "", riderNote: "",
+  timing: "adesso", timeWhen: "",
   payment: "contanti",
   note: "",
 };
@@ -924,6 +929,28 @@ document.querySelectorAll("#payToggle button").forEach(b => {
   });
 });
 
+document.querySelectorAll("#timeToggle button").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("#timeToggle button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    state.timing = b.dataset.time;
+    $("#timeWrap").style.display = state.timing === "dopo" ? "block" : "none";
+    // Clear error when switching
+    $("#timeBox").classList.remove("error");
+    $("#timeWarn").classList.remove("show");
+    renderCart();
+  });
+});
+
+$("#timeWhen").addEventListener("input", e => {
+  state.timeWhen = e.target.value;
+  if (state.timeWhen){
+    $("#timeBox").classList.remove("error");
+    $("#timeWarn").classList.remove("show");
+  }
+  renderCart();
+});
+
 function updatePayHint(){
   const hint = $("#payHint");
   if (state.payment === "carta"){
@@ -1020,10 +1047,12 @@ function renderCart(){
   $("#grandTotal").textContent = fmt(total);
   const btn = $("#waBtn");
 
-  // Validation: cart non-empty + (if consegna) address provided
+  // Validation: cart non-empty + (if consegna) address provided + (if dopo) time provided
   const needsAddress = state.mode === "consegna";
   const addressOk = !needsAddress || state.address.length >= 5;
-  const canOrder = total > 0 && addressOk;
+  const needsTime = state.timing === "dopo";
+  const timeOk = !needsTime || (state.timeWhen && state.timeWhen.length >= 4);
+  const canOrder = total > 0 && addressOk && timeOk;
 
   if (canOrder){
     btn.setAttribute("aria-disabled","false");
@@ -1047,6 +1076,11 @@ function buildOrderMessage(lines,total){
     msg += `📍 ${state.address}\n`;
     if (state.riderNote) msg += `🛎️ Rider: ${state.riderNote}\n`;
   }
+  if (state.timing === "dopo" && state.timeWhen){
+    msg += `⏰ Per le ${state.timeWhen}\n`;
+  } else {
+    msg += `⚡ Subito\n`;
+  }
   msg += `${state.payment === "carta" ? "💳" : "💶"} Pagamento: ${state.payment === "carta" ? "Carta (POS necessario)" : "Contanti"}\n\n`;
   msg += `*Ordine:*\n`;
   lines.forEach(l => {
@@ -1066,46 +1100,68 @@ function buildWaLink(lines,total){
 
 /* Validation feedback on WhatsApp button tap */
 $("#waBtn").addEventListener("click", (e) => {
-  // If disabled because of missing address, highlight the field
   if ($("#waBtn").getAttribute("aria-disabled") === "true"){
     e.preventDefault();
-    if (state.mode === "consegna" && state.address.length < 5 && buildCartLines().length > 0){
+    if (buildCartLines().length === 0) return;
+    // Address missing
+    if (state.mode === "consegna" && state.address.length < 5){
       const box = $("#addressBox");
       const warn = $("#addressWarn");
       box.classList.add("error");
       warn.classList.add("show");
       box.scrollIntoView({behavior:"smooth", block:"center"});
       $("#address").focus();
+      return;
+    }
+    // Time missing
+    if (state.timing === "dopo" && (!state.timeWhen || state.timeWhen.length < 4)){
+      const box = $("#timeBox");
+      const warn = $("#timeWarn");
+      box.classList.add("error");
+      warn.classList.add("show");
+      box.scrollIntoView({behavior:"smooth", block:"center"});
+      $("#timeWhen").focus();
+      return;
     }
   }
 });
 
-/* ============== SHRINK-ON-SCROLL HEADER ============== */
+/* ============== SHRINK-ON-SCROLL HEADER ==============
+   Uses IntersectionObserver on a 50px sentinel at the top of the page.
+   This is immune to scroll oscillation: shrink state is bound to whether
+   the sentinel is in view, NOT to the live scrollY value (which changes
+   as the header itself resizes — causing infinite loops on some devices). */
 (function setupShrinkHeader(){
   const header = document.querySelector("header.top");
-  const SHRINK_AT = 40;       // scroll threshold in px
-  const UNSHRINK_AT = 20;     // hysteresis: only unshrink when going clearly back to top
-  let ticking = false;
-  let isShrunk = false;
+  const sentinel = document.getElementById("scrollSentinel");
+  if (!header || !sentinel) return;
 
-  function update(){
-    const y = window.scrollY || window.pageYOffset;
-    if (!isShrunk && y > SHRINK_AT){
-      header.classList.add("shrunk");
-      isShrunk = true;
-    } else if (isShrunk && y < UNSHRINK_AT){
-      header.classList.remove("shrunk");
-      isShrunk = false;
+  if ("IntersectionObserver" in window){
+    const io = new IntersectionObserver((entries) => {
+      // When the sentinel leaves the viewport (scrolled past) → shrink.
+      // When it comes back into view → expand.
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          header.classList.remove("shrunk");
+        } else {
+          header.classList.add("shrunk");
+        }
+      });
+    }, { threshold: 0, rootMargin: "0px" });
+    io.observe(sentinel);
+  } else {
+    // Fallback for very old browsers: simple scroll handler with wide hysteresis
+    let ticking = false;
+    function update(){
+      const y = window.scrollY || window.pageYOffset;
+      if (y > 80) header.classList.add("shrunk");
+      else if (y < 10) header.classList.remove("shrunk");
+      ticking = false;
     }
-    ticking = false;
+    window.addEventListener("scroll", () => {
+      if (!ticking){ window.requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
   }
-
-  window.addEventListener("scroll", () => {
-    if (!ticking){
-      window.requestAnimationFrame(update);
-      ticking = true;
-    }
-  }, { passive: true });
 })();
 
 /* ============== INIT ============== */
