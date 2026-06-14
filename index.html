@@ -32,47 +32,7 @@
     padding-bottom:120px;
   }
 
-  /* Menu intro banner */
-  .menu-intro{
-    background:var(--paper);
-    border:2px solid var(--ink);
-    border-radius:14px;
-    padding:14px 16px;
-    margin:14px 0 4px;
-    box-shadow: 4px 4px 0 var(--ink);
-  }
-  .menu-intro h2{
-    font-family:'Archivo Black',sans-serif;
-    font-size:26px;
-    margin:0 0 6px;
-    letter-spacing:.5px;
-    line-height:1;
-    text-align:center;
-    text-transform:uppercase;
-    color:var(--ink);
-  }
-  .menu-intro h2 .amp{
-    color:var(--accent);
-    font-size:32px;
-    vertical-align:-2px;
-  }
-  .menu-intro .specs{
-    color:var(--accent);
-    font-family:'Archivo Black',sans-serif;
-    text-transform:uppercase;
-    font-size:11.5px;
-    letter-spacing:.3px;
-    line-height:1.35;
-    margin-top:6px;
-  }
-  .menu-intro .specs p{margin:2px 0;display:flex;align-items:flex-start;gap:6px}
-  .menu-intro .specs p::before{
-    content:"";
-    width:8px;height:2px;
-    background:var(--accent);
-    flex-shrink:0;
-    margin-top:8px;
-  }
+  /* Header */
   header.top{
     padding:14px 18px;
     border-bottom:2px solid var(--ink);
@@ -108,6 +68,16 @@
   }
   header.top.shrunk .brand-scritta{
     height:40px;
+  }
+  .brand small{
+    display:block;font-size:10px;color:var(--ink-soft);
+    letter-spacing:1.5px;text-transform:uppercase;
+    margin-top:4px;font-weight:600;
+    max-height:20px;overflow:hidden;
+    transition: max-height .25s ease, margin-top .25s ease, opacity .2s ease;
+  }
+  header.top.shrunk .brand small{
+    max-height:0;margin-top:0;opacity:0;
   }
 
   /* Sections */
@@ -305,8 +275,6 @@
 </head>
 <body>
 
-<div id="scrollSentinel" aria-hidden="true" style="position:absolute;top:0;left:0;width:1px;height:50px;pointer-events:none"></div>
-
 <header class="top">
   <div class="brand">
     <div class="brand-logo">
@@ -314,19 +282,12 @@
     </div>
     <div class="brand-text">
       <img src="scritta.png" alt="Punny Smash" class="brand-scritta">
+      <small>Smash burger · ordina e ritira</small>
     </div>
   </div>
 </header>
 
 <main>
-
-  <div class="menu-intro">
-    <h2>Food <span class="amp">&amp;</span> Beverage</h2>
-    <div class="specs">
-      <p>Potato bun</p>
-      <p>Double beef/pork patty smashed: due dischi di carne di manzo/maiale (100g × 2) schiacciati e reazione Maillard</p>
-    </div>
-  </div>
 
   <h2 class="section-title">Burger <em>// smash burgers</em></h2>
   <div id="burgers"></div>
@@ -357,57 +318,6 @@
   <h2 class="section-title">Bibite <em>// drinks</em></h2>
   <div class="card-block" id="drinks"></div>
 
-  <!-- Milkshake configurator -->
-  <div class="composer" style="margin-top:14px">
-    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">
-      <div class="row-photo" style="width:64px;height:64px;border-radius:12px"><img src="img/punny-milkshake.jpg" alt="Punny Milkshake" onerror="this.parentNode.innerHTML='<div class=ph-placeholder>Punny Milkshake</div>'"></div>
-      <div style="flex:1;min-width:0">
-        <h3 style="margin:0">Punny Milkshake</h3>
-        <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Milkshake artigianale, scegli base e topping.</div>
-      </div>
-    </div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:10px 0 6px;letter-spacing:.5px">Base</div>
-    <div class="ingredients" id="milkshakeBase"></div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Topping <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none">(opzionali)</span></div>
-    <div class="ingredients" id="milkshakeToppings"></div>
-    <div class="composer-foot">
-      <div class="price">
-        <small>Totale milkshake</small>
-        <span id="milkshakePrice">3,00 €</span>
-      </div>
-      <button class="add-btn" id="addMilkshake">Aggiungi all'ordine</button>
-    </div>
-  </div>
-
-  <h2 class="section-title">Dolci <em>// desserts</em></h2>
-
-  <!-- Punny Biscuit (simple row) -->
-  <div class="card-block" id="biscuitRow" style="margin-bottom:14px"></div>
-
-  <!-- Pattyciok configurator -->
-  <div class="composer">
-    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">
-      <div class="row-photo" style="width:64px;height:64px;border-radius:12px"><img src="img/punny-pattyciok.jpg" alt="Punny Pattyciok" onerror="this.parentNode.innerHTML='<div class=ph-placeholder>Punny Pattyciok</div>'"></div>
-      <div style="flex:1;min-width:0">
-        <h3 style="margin:0">Punny Pattyciok</h3>
-        <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Potato bun farcito, scegli farcitura e gusto.</div>
-      </div>
-    </div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:10px 0 6px;letter-spacing:.5px">Farcitura</div>
-    <div class="ingredients" id="pattyciokFilling"></div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Gusto</div>
-    <div class="ingredients" id="pattyciokFlavour"></div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Topping <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none">(opzionali)</span></div>
-    <div class="ingredients" id="pattyciokToppings"></div>
-    <div class="composer-foot">
-      <div class="price">
-        <small>Totale pattyciok</small>
-        <span id="pattyciokPrice">3,00 €</span>
-      </div>
-      <button class="add-btn" id="addPattyciok">Aggiungi all'ordine</button>
-    </div>
-  </div>
-
   <h2 class="section-title">Modalità <em>// ritiro</em></h2>
   <div class="toggle-row" id="modeToggle">
     <button data-mode="consegna" class="on"><span class="icon">🛵</span>Consegna</button>
@@ -423,19 +333,6 @@
     <div class="note-box" id="riderBox" style="margin-top:10px">
       <label>Note per il rider <span style="font-weight:400;color:var(--ink-soft);font-size:11px;letter-spacing:.3px">(opzionale)</span></label>
       <textarea id="riderNote" rows="2" placeholder="es. piano 3, citofono Rossi, scala B"></textarea>
-    </div>
-  </div>
-
-  <h2 class="section-title">Orario <em>// quando</em></h2>
-  <div class="toggle-row" id="timeToggle">
-    <button data-time="adesso" class="on"><span class="icon">⚡</span>Adesso</button>
-    <button data-time="dopo"><span class="icon">🕒</span>Dopo</button>
-  </div>
-  <div id="timeWrap" style="display:none;margin-top:10px">
-    <div class="note-box required" id="timeBox">
-      <label>Orario richiesto</label>
-      <input id="timeWhen" type="time" />
-      <div class="field-warn" id="timeWarn">⚠ Inserisci l'orario per finalizzare l'ordine</div>
     </div>
   </div>
 
@@ -491,8 +388,6 @@ const BURGERS = [
   { id:"punny",    name:"Punny Smash",         price:9.00, photo:"img/punny-smash.jpg",         desc:"Cheddar, carne x2, salsa smash, bacon, cetriolini pickled, cipolla caramellata" },
   { id:"italian",  name:"Italian Smash",       price:8.50, photo:"img/italian-smash.jpg",       desc:"Provola, salsa parmigiano, lattuga, pomodoro, carne x2" },
   { id:"spicy",    name:"Spicy Smash",         price:8.50, photo:"img/spicy-smash.jpg",         desc:"Salsa piccante hot, lattuga, pomodoro, carne x2, cheddar" },
-  { id:"veggie",   name:"Punny Veggie",        price:8.50, photo:"img/punny-veggie.jpg",        desc:"Uovo fried, salsa parmigiano, provola smoked, cipolle caramellate, cetriolini pickled, lattuga, pomodoro, cipolle crunchy fried" },
-  { id:"chicken",  name:"Punny Chicken",       price:8.50, photo:"img/punny-chicken.jpg",       desc:"Pollo fritto croccante succoso, bacon, lattuga, pomodoro, mayo soia teriyaki" },
 ];
 
 const CUSTOM_BASE = 7.00;
@@ -515,7 +410,6 @@ const INGREDIENTS = [
 const SIDES = [
   { id:"sweet",   name:"Patate dolci",          subtitle:"Sweet potatoes", price:3.50, photo:"img/patate-dolci.jpg" },
   { id:"classic", name:"Patate classic stick",  subtitle:"",               price:3.00, photo:"img/patate-classic.jpg" },
-  { id:"nuggets", name:"Chicken Nuggets",       subtitle:"",               price:4.50, photo:"img/chicken-nuggets.jpg" },
 ];
 
 const SAUCES = [
@@ -533,71 +427,11 @@ const DRINKS = [
   { id:"birra8", name:"Birra vetro 8°",        price:3.50, photo:"img/birra-8.jpg" },
 ];
 
-/* Punny Pattyciok: base price 3€, you pick filling type + flavour, plus optional toppings */
-const PATTYCIOK = {
-  id:"pattyciok",
-  name:"Punny Pattyciok",
-  basePrice: 3.00,
-  photo:"img/punny-pattyciok.jpg",
-  desc:"Potato bun farcito con disco fresco o crema spalmabile al cioccolato",
-  fillings: [
-    { id:"disco",  name:"Disco fresco",      price:1.00 },
-    { id:"crema",  name:"Crema spalmabile",  price:0.50 },
-  ],
-  flavours: [
-    { id:"nutella",  name:"Nutella" },
-    { id:"fondente", name:"Cioccolato Fondente" },
-    { id:"bianco",   name:"Cioccolato Bianco" },
-    { id:"mix",      name:"Mix" },
-  ],
-  toppings: [
-    { id:"nocciole",  name:"Granella di Nocciole",    price:0.50 },
-    { id:"panna",     name:"Panna Montata",           price:0.50 },
-    { id:"cialda",    name:"Cialda Biscotto Croccante", price:0.50 },
-    { id:"scaglie",   name:"Scaglie di Cioccolato",   price:0.50 },
-    { id:"frutti",    name:"Frutti Rossi",            price:1.00 },
-    { id:"maldon",    name:"Cristalli di sale Maldon", price:0.50 },
-  ],
-};
-
-/* Punny Biscuit: single fixed item */
-const PUNNY_BISCUIT = {
-  id:"biscuit",
-  name:"Punny Biscuit",
-  price:3.00,
-  photo:"img/punny-biscuit.jpg",
-  desc:"Biscotto ricoperto di cioccolato",
-};
-
-/* Punny Milkshake */
-const MILKSHAKE = {
-  id:"milkshake",
-  name:"Punny Milkshake",
-  photo:"img/punny-milkshake.jpg",
-  desc:"Milkshake artigianale",
-  bases: [
-    { id:"fiordilatte",  name:"Fiordilatte",                 price:3.00 },
-    { id:"fiordi-cioc",  name:"Fiordilatte e Cioccolato",    price:3.50 },
-  ],
-  toppings: [
-    { id:"panna",     name:"Panna Montata",            price:0.50 },
-    { id:"scaglie",   name:"Scaglie di Cioccolato",    price:0.50 },
-    { id:"maldon",    name:"Cristalli di sale Maldon", price:0.50 },
-    { id:"frutti",    name:"Frutti Rossi",             price:1.00 },
-    { id:"cialda",    name:"Cialda Biscotto Croccante", price:0.50 },
-    { id:"nocciole",  name:"Granella di Nocciole",     price:0.50 },
-  ],
-};
-
 /* ============== STATE ============== */
 const state = {
   burgers: {}, custom: [], customSelection: new Set(),
   sides: {}, sauces: {}, drinks: {},
-  biscuit: 0,
-  pattyciok: [],     // array of configured items: {filling, flavour, toppings:[], price}
-  milkshakes: [],    // array of configured items: {base, toppings:[], price}
   mode: "consegna", address: "", riderNote: "",
-  timing: "adesso", timeWhen: "",
   payment: "contanti",
   note: "",
 };
@@ -703,152 +537,6 @@ $("#addCustom").addEventListener("click", () => {
   renderIngredients(); updateCustomPrice(); renderCart();
 });
 
-/* ============== BISCUIT (simple +/-) ============== */
-function renderBiscuit(){
-  const c = $("#biscuitRow"); c.innerHTML = "";
-  const qty = state.biscuit;
-  const row = el("div", {class:"row-item"},
-    el("div", {class:"row-main"},
-      makePhotoEl(PUNNY_BISCUIT.photo, PUNNY_BISCUIT.name, "row-photo"),
-      el("div", {class:"row-name"}, PUNNY_BISCUIT.name,
-        el("small", {}, PUNNY_BISCUIT.desc)
-      )
-    ),
-    el("div", {class:"row-right"},
-      el("span", {class:"row-price"}, fmt(PUNNY_BISCUIT.price)),
-      el("div", {class:"qty"},
-        el("button", {onclick:()=>{ state.biscuit = Math.max(0, state.biscuit-1); renderBiscuit(); renderCart(); }}, "−"),
-        el("span", {}, String(qty)),
-        el("button", {onclick:()=>{ state.biscuit += 1; renderBiscuit(); renderCart(); }}, "+"),
-      )
-    )
-  );
-  c.append(row);
-}
-
-/* ============== PATTYCIOK CONFIGURATOR ============== */
-const pattyciokSel = { filling:null, flavour:null, toppings:new Set() };
-
-function pattyciokCurrentPrice(){
-  let p = PATTYCIOK.basePrice;
-  if (pattyciokSel.filling){
-    const f = PATTYCIOK.fillings.find(x=>x.id===pattyciokSel.filling);
-    if (f) p += f.price;
-  }
-  pattyciokSel.toppings.forEach(id => {
-    const t = PATTYCIOK.toppings.find(x=>x.id===id);
-    if (t) p += t.price;
-  });
-  return p;
-}
-function updatePattyciokPrice(){ $("#pattyciokPrice").textContent = fmt(pattyciokCurrentPrice()); }
-
-function renderPattyciok(){
-  // Fillings (single-select)
-  const fc = $("#pattyciokFilling"); fc.innerHTML = "";
-  PATTYCIOK.fillings.forEach(f => {
-    const on = pattyciokSel.filling === f.id;
-    fc.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{ pattyciokSel.filling = on ? null : f.id; renderPattyciok(); updatePattyciokPrice(); }
-    }, f.name, el("span",{class:"x"},"+"+f.price.toFixed(2).replace(".",",")+CONFIG.currency)));
-  });
-
-  // Flavours (single-select, no price)
-  const fl = $("#pattyciokFlavour"); fl.innerHTML = "";
-  PATTYCIOK.flavours.forEach(f => {
-    const on = pattyciokSel.flavour === f.id;
-    fl.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{ pattyciokSel.flavour = on ? null : f.id; renderPattyciok(); }
-    }, f.name));
-  });
-
-  // Toppings (multi-select)
-  const tc = $("#pattyciokToppings"); tc.innerHTML = "";
-  PATTYCIOK.toppings.forEach(t => {
-    const on = pattyciokSel.toppings.has(t.id);
-    tc.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{
-        if (on) pattyciokSel.toppings.delete(t.id); else pattyciokSel.toppings.add(t.id);
-        renderPattyciok(); updatePattyciokPrice();
-      }
-    }, t.name, el("span",{class:"x"},"+"+t.price.toFixed(2).replace(".",",")+CONFIG.currency)));
-  });
-}
-
-$("#addPattyciok").addEventListener("click", () => {
-  if (!pattyciokSel.filling){ alert("Scegli la farcitura (Disco fresco o Crema spalmabile)"); return; }
-  if (!pattyciokSel.flavour){ alert("Scegli il gusto"); return; }
-  const filling = PATTYCIOK.fillings.find(x=>x.id===pattyciokSel.filling);
-  const flavour = PATTYCIOK.flavours.find(x=>x.id===pattyciokSel.flavour);
-  const toppings = [...pattyciokSel.toppings].map(id => PATTYCIOK.toppings.find(x=>x.id===id));
-  state.pattyciok.push({
-    filling, flavour, toppings, price: pattyciokCurrentPrice()
-  });
-  pattyciokSel.filling = null;
-  pattyciokSel.flavour = null;
-  pattyciokSel.toppings.clear();
-  renderPattyciok(); updatePattyciokPrice(); renderCart();
-});
-
-/* ============== MILKSHAKE CONFIGURATOR ============== */
-const milkshakeSel = { base:null, toppings:new Set() };
-
-function milkshakeCurrentPrice(){
-  let p = 0;
-  if (milkshakeSel.base){
-    const b = MILKSHAKE.bases.find(x=>x.id===milkshakeSel.base);
-    if (b) p += b.price;
-  }
-  milkshakeSel.toppings.forEach(id => {
-    const t = MILKSHAKE.toppings.find(x=>x.id===id);
-    if (t) p += t.price;
-  });
-  return p;
-}
-function updateMilkshakePrice(){
-  const p = milkshakeCurrentPrice();
-  $("#milkshakePrice").textContent = p > 0 ? fmt(p) : "—";
-}
-
-function renderMilkshake(){
-  // Bases (single-select, required, replaces base price)
-  const bc = $("#milkshakeBase"); bc.innerHTML = "";
-  MILKSHAKE.bases.forEach(b => {
-    const on = milkshakeSel.base === b.id;
-    bc.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{ milkshakeSel.base = on ? null : b.id; renderMilkshake(); updateMilkshakePrice(); }
-    }, b.name, el("span",{class:"x"}, b.price.toFixed(2).replace(".",",")+CONFIG.currency)));
-  });
-  // Toppings (multi-select)
-  const tc = $("#milkshakeToppings"); tc.innerHTML = "";
-  MILKSHAKE.toppings.forEach(t => {
-    const on = milkshakeSel.toppings.has(t.id);
-    tc.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{
-        if (on) milkshakeSel.toppings.delete(t.id); else milkshakeSel.toppings.add(t.id);
-        renderMilkshake(); updateMilkshakePrice();
-      }
-    }, t.name, el("span",{class:"x"},"+"+t.price.toFixed(2).replace(".",",")+CONFIG.currency)));
-  });
-}
-
-$("#addMilkshake").addEventListener("click", () => {
-  if (!milkshakeSel.base){ alert("Scegli la base del milkshake"); return; }
-  const base = MILKSHAKE.bases.find(x=>x.id===milkshakeSel.base);
-  const toppings = [...milkshakeSel.toppings].map(id => MILKSHAKE.toppings.find(x=>x.id===id));
-  state.milkshakes.push({
-    base, toppings, price: milkshakeCurrentPrice()
-  });
-  milkshakeSel.base = null;
-  milkshakeSel.toppings.clear();
-  renderMilkshake(); updateMilkshakePrice(); renderCart();
-});
-
 /* ============== SIDES / DRINKS ============== */
 function renderRowList(containerId, list, stateMap){
   const c = $(containerId); c.innerHTML = "";
@@ -929,28 +617,6 @@ document.querySelectorAll("#payToggle button").forEach(b => {
   });
 });
 
-document.querySelectorAll("#timeToggle button").forEach(b => {
-  b.addEventListener("click", () => {
-    document.querySelectorAll("#timeToggle button").forEach(x=>x.classList.remove("on"));
-    b.classList.add("on");
-    state.timing = b.dataset.time;
-    $("#timeWrap").style.display = state.timing === "dopo" ? "block" : "none";
-    // Clear error when switching
-    $("#timeBox").classList.remove("error");
-    $("#timeWarn").classList.remove("show");
-    renderCart();
-  });
-});
-
-$("#timeWhen").addEventListener("input", e => {
-  state.timeWhen = e.target.value;
-  if (state.timeWhen){
-    $("#timeBox").classList.remove("error");
-    $("#timeWarn").classList.remove("show");
-  }
-  renderCart();
-});
-
 function updatePayHint(){
   const hint = $("#payHint");
   if (state.payment === "carta"){
@@ -997,21 +663,6 @@ function buildCartLines(){
     const q = state.drinks[d.id] || 0;
     if (q>0) lines.push({ label:d.name, qty:q, unit:d.price, key:"drink:"+d.id });
   });
-  // Biscuit
-  if (state.biscuit > 0){
-    lines.push({ label:PUNNY_BISCUIT.name, qty:state.biscuit, unit:PUNNY_BISCUIT.price, key:"biscuit" });
-  }
-  // Pattyciok
-  state.pattyciok.forEach((p,idx) => {
-    const parts = [p.filling.name, p.flavour.name];
-    if (p.toppings.length) parts.push(p.toppings.map(t=>t.name).join(", "));
-    lines.push({ label:PATTYCIOK.name, sub:parts.join(" · "), qty:1, unit:p.price, key:"pattyciok:"+idx });
-  });
-  // Milkshake
-  state.milkshakes.forEach((m,idx) => {
-    const sub = m.toppings.length ? `${m.base.name} + ${m.toppings.map(t=>t.name).join(", ")}` : m.base.name;
-    lines.push({ label:MILKSHAKE.name, sub, qty:1, unit:m.price, key:"milkshake:"+idx });
-  });
   return lines;
 }
 
@@ -1022,10 +673,7 @@ function removeLine(key){
   else if (type === "side") state.sides[id] = 0;
   else if (type === "sauce") state.sauces[id] = 0;
   else if (type === "drink") state.drinks[id] = 0;
-  else if (type === "biscuit") state.biscuit = 0;
-  else if (type === "pattyciok") state.pattyciok.splice(parseInt(id),1);
-  else if (type === "milkshake") state.milkshakes.splice(parseInt(id),1);
-  renderBurgers(); renderRowList("#sides",SIDES,state.sides); renderRowList("#drinks",DRINKS,state.drinks); renderSauces(); renderBiscuit(); renderCart();
+  renderBurgers(); renderRowList("#sides",SIDES,state.sides); renderRowList("#drinks",DRINKS,state.drinks); renderSauces(); renderCart();
 }
 
 function renderCart(){
@@ -1047,12 +695,10 @@ function renderCart(){
   $("#grandTotal").textContent = fmt(total);
   const btn = $("#waBtn");
 
-  // Validation: cart non-empty + (if consegna) address provided + (if dopo) time provided
+  // Validation: cart non-empty + (if consegna) address provided
   const needsAddress = state.mode === "consegna";
   const addressOk = !needsAddress || state.address.length >= 5;
-  const needsTime = state.timing === "dopo";
-  const timeOk = !needsTime || (state.timeWhen && state.timeWhen.length >= 4);
-  const canOrder = total > 0 && addressOk && timeOk;
+  const canOrder = total > 0 && addressOk;
 
   if (canOrder){
     btn.setAttribute("aria-disabled","false");
@@ -1076,11 +722,6 @@ function buildOrderMessage(lines,total){
     msg += `📍 ${state.address}\n`;
     if (state.riderNote) msg += `🛎️ Rider: ${state.riderNote}\n`;
   }
-  if (state.timing === "dopo" && state.timeWhen){
-    msg += `⏰ Per le ${state.timeWhen}\n`;
-  } else {
-    msg += `⚡ Subito\n`;
-  }
   msg += `${state.payment === "carta" ? "💳" : "💶"} Pagamento: ${state.payment === "carta" ? "Carta (POS necessario)" : "Contanti"}\n\n`;
   msg += `*Ordine:*\n`;
   lines.forEach(l => {
@@ -1100,68 +741,46 @@ function buildWaLink(lines,total){
 
 /* Validation feedback on WhatsApp button tap */
 $("#waBtn").addEventListener("click", (e) => {
+  // If disabled because of missing address, highlight the field
   if ($("#waBtn").getAttribute("aria-disabled") === "true"){
     e.preventDefault();
-    if (buildCartLines().length === 0) return;
-    // Address missing
-    if (state.mode === "consegna" && state.address.length < 5){
+    if (state.mode === "consegna" && state.address.length < 5 && buildCartLines().length > 0){
       const box = $("#addressBox");
       const warn = $("#addressWarn");
       box.classList.add("error");
       warn.classList.add("show");
       box.scrollIntoView({behavior:"smooth", block:"center"});
       $("#address").focus();
-      return;
-    }
-    // Time missing
-    if (state.timing === "dopo" && (!state.timeWhen || state.timeWhen.length < 4)){
-      const box = $("#timeBox");
-      const warn = $("#timeWarn");
-      box.classList.add("error");
-      warn.classList.add("show");
-      box.scrollIntoView({behavior:"smooth", block:"center"});
-      $("#timeWhen").focus();
-      return;
     }
   }
 });
 
-/* ============== SHRINK-ON-SCROLL HEADER ==============
-   Uses IntersectionObserver on a 50px sentinel at the top of the page.
-   This is immune to scroll oscillation: shrink state is bound to whether
-   the sentinel is in view, NOT to the live scrollY value (which changes
-   as the header itself resizes — causing infinite loops on some devices). */
+/* ============== SHRINK-ON-SCROLL HEADER ============== */
 (function setupShrinkHeader(){
   const header = document.querySelector("header.top");
-  const sentinel = document.getElementById("scrollSentinel");
-  if (!header || !sentinel) return;
+  const SHRINK_AT = 40;       // scroll threshold in px
+  const UNSHRINK_AT = 20;     // hysteresis: only unshrink when going clearly back to top
+  let ticking = false;
+  let isShrunk = false;
 
-  if ("IntersectionObserver" in window){
-    const io = new IntersectionObserver((entries) => {
-      // When the sentinel leaves the viewport (scrolled past) → shrink.
-      // When it comes back into view → expand.
-      entries.forEach(entry => {
-        if (entry.isIntersecting){
-          header.classList.remove("shrunk");
-        } else {
-          header.classList.add("shrunk");
-        }
-      });
-    }, { threshold: 0, rootMargin: "0px" });
-    io.observe(sentinel);
-  } else {
-    // Fallback for very old browsers: simple scroll handler with wide hysteresis
-    let ticking = false;
-    function update(){
-      const y = window.scrollY || window.pageYOffset;
-      if (y > 80) header.classList.add("shrunk");
-      else if (y < 10) header.classList.remove("shrunk");
-      ticking = false;
+  function update(){
+    const y = window.scrollY || window.pageYOffset;
+    if (!isShrunk && y > SHRINK_AT){
+      header.classList.add("shrunk");
+      isShrunk = true;
+    } else if (isShrunk && y < UNSHRINK_AT){
+      header.classList.remove("shrunk");
+      isShrunk = false;
     }
-    window.addEventListener("scroll", () => {
-      if (!ticking){ window.requestAnimationFrame(update); ticking = true; }
-    }, { passive: true });
+    ticking = false;
   }
+
+  window.addEventListener("scroll", () => {
+    if (!ticking){
+      window.requestAnimationFrame(update);
+      ticking = true;
+    }
+  }, { passive: true });
 })();
 
 /* ============== INIT ============== */
@@ -1171,11 +790,6 @@ updateCustomPrice();
 renderRowList("#sides",  SIDES,  state.sides);
 renderRowList("#drinks", DRINKS, state.drinks);
 renderSauces();
-renderBiscuit();
-renderPattyciok();
-updatePattyciokPrice();
-renderMilkshake();
-updateMilkshakePrice();
 renderCart();
 </script>
 </body>
