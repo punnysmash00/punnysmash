@@ -190,6 +190,7 @@
     user-select:none;
   }
   .chip.on{background:var(--accent);color:#fff;border-color:var(--accent-deep)}
+  .chip.disabled{opacity:.35;cursor:not-allowed}
   .chip .x{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.7}
   .composer-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px}
   .composer-foot .price{font-family:'Archivo Black',sans-serif;font-size:22px}
@@ -400,7 +401,7 @@
     </div>
     <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:10px 0 6px;letter-spacing:.5px">Farcitura</div>
     <div class="ingredients" id="pattyciokFilling"></div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Gusto</div>
+    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Gusto <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none;letter-spacing:0">(scegli 1 o 2)</span></div>
     <div class="ingredients" id="pattyciokFlavour"></div>
     <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Topping <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none">(opzionali)</span></div>
     <div class="ingredients" id="pattyciokToppings"></div>
@@ -565,7 +566,6 @@ const PATTYCIOK = {
     { id:"nutella",  name:"Nutella",             photo:"img/punnypattycioknutella.jpg" },
     { id:"fondente", name:"Cioccolato Fondente", photo:"img/punnypattyciokfondente.jpeg" },
     { id:"bianco",   name:"Cioccolato Bianco",   photo:"img/punnypattyciokbianco.jpeg" },
-    { id:"mix",      name:"Mix",                 photo:"img/punnypattycioknutella.jpg" },
   ],
   toppings: [
     { id:"nocciole",  name:"Granella di Nocciole",    price:0.50 },
@@ -744,7 +744,7 @@ function renderBiscuit(){
 }
 
 /* ============== PATTYCIOK CONFIGURATOR ============== */
-const pattyciokSel = { filling:null, flavour:null, toppings:new Set() };
+const pattyciokSel = { filling:null, flavours:new Set(), toppings:new Set() };
 
 function pattyciokCurrentPrice(){
   let p = PATTYCIOK.basePrice;
@@ -771,22 +771,36 @@ function renderPattyciok(){
     }, f.name, el("span",{class:"x"},"+"+f.price.toFixed(2).replace(".",",")+CONFIG.currency)));
   });
 
-  // Flavours (single-select, no price)
+  // Flavours (multi-select, max 2)
   const fl = $("#pattyciokFlavour"); fl.innerHTML = "";
+  const atLimit = pattyciokSel.flavours.size >= 2;
   PATTYCIOK.flavours.forEach(f => {
-    const on = pattyciokSel.flavour === f.id;
+    const on = pattyciokSel.flavours.has(f.id);
+    const disabled = !on && atLimit;
     fl.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{ pattyciokSel.flavour = on ? null : f.id; renderPattyciok(); }
+      class:"chip"+(on?" on":"")+(disabled?" disabled":""),
+      onclick:()=>{
+        if (on){
+          pattyciokSel.flavours.delete(f.id);
+        } else if (!disabled){
+          pattyciokSel.flavours.add(f.id);
+        }
+        // If user taps a 3rd chip while at limit: do nothing
+        renderPattyciok();
+      }
     }, f.name));
   });
 
-  // Update preview photo based on selected flavour (or default)
+  // Update preview photo based on selected flavours:
+  //  - 0 selected → default (Nutella)
+  //  - 1 selected → that flavour's photo
+  //  - 2 selected → Nutella (default)
   const photoEl = $("#pattyciokPhoto");
   if (photoEl){
-    let newSrc = PATTYCIOK.photo; // default (nutella)
-    if (pattyciokSel.flavour){
-      const sel = PATTYCIOK.flavours.find(x=>x.id===pattyciokSel.flavour);
+    let newSrc = PATTYCIOK.photo; // default = Nutella, also used when 2 are selected
+    if (pattyciokSel.flavours.size === 1){
+      const id = [...pattyciokSel.flavours][0];
+      const sel = PATTYCIOK.flavours.find(x=>x.id===id);
       if (sel && sel.photo) newSrc = sel.photo;
     }
     if (photoEl.getAttribute("src") !== newSrc){
@@ -810,15 +824,15 @@ function renderPattyciok(){
 
 $("#addPattyciok").addEventListener("click", () => {
   if (!pattyciokSel.filling){ alert("Scegli la farcitura (Disco fresco o Crema spalmabile)"); return; }
-  if (!pattyciokSel.flavour){ alert("Scegli il gusto"); return; }
+  if (pattyciokSel.flavours.size === 0){ alert("Scegli almeno un gusto"); return; }
   const filling = PATTYCIOK.fillings.find(x=>x.id===pattyciokSel.filling);
-  const flavour = PATTYCIOK.flavours.find(x=>x.id===pattyciokSel.flavour);
+  const flavours = [...pattyciokSel.flavours].map(id => PATTYCIOK.flavours.find(x=>x.id===id));
   const toppings = [...pattyciokSel.toppings].map(id => PATTYCIOK.toppings.find(x=>x.id===id));
   state.pattyciok.push({
-    filling, flavour, toppings, price: pattyciokCurrentPrice()
+    filling, flavours, toppings, price: pattyciokCurrentPrice()
   });
   pattyciokSel.filling = null;
-  pattyciokSel.flavour = null;
+  pattyciokSel.flavours.clear();
   pattyciokSel.toppings.clear();
   renderPattyciok(); updatePattyciokPrice(); renderCart();
 });
@@ -1033,7 +1047,8 @@ function buildCartLines(){
   }
   // Pattyciok
   state.pattyciok.forEach((p,idx) => {
-    const parts = [p.filling.name, p.flavour.name];
+    const flavourNames = p.flavours.map(f=>f.name).join(" + ");
+    const parts = [p.filling.name, flavourNames];
     if (p.toppings.length) parts.push(p.toppings.map(t=>t.name).join(", "));
     lines.push({ label:PATTYCIOK.name, sub:parts.join(" · "), qty:1, unit:p.price, key:"pattyciok:"+idx });
   });
