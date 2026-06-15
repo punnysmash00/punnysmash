@@ -451,6 +451,12 @@
     <button data-pay="carta"><span class="icon">💳</span>Carta</button>
   </div>
   <div class="pay-hint" id="payHint">Il locale porterà il POS al momento della consegna.</div>
+  <div id="changeWrap" style="margin-top:10px">
+    <div class="note-box">
+      <label>Serve resto? <span style="font-weight:400;color:var(--ink-soft);font-size:11px;letter-spacing:.3px">(opzionale)</span></label>
+      <textarea id="changeNote" rows="2" placeholder="es. pago con 50€, serve resto da 20€"></textarea>
+    </div>
+  </div>
 
   <h2 class="section-title">Note <em>// opzionali</em></h2>
   <div class="note-box">
@@ -615,7 +621,7 @@ const state = {
   milkshakes: [],    // array of configured items: {base, toppings:[], price}
   mode: "consegna", address: "", riderNote: "",
   timing: "adesso", timeWhen: "",
-  payment: "contanti",
+  payment: "contanti", changeNote: "",
   note: "",
 };
 
@@ -991,13 +997,16 @@ $("#timeWhen").addEventListener("input", e => {
 
 function updatePayHint(){
   const hint = $("#payHint");
+  const changeWrap = $("#changeWrap");
   if (state.payment === "carta"){
     hint.classList.add("show");
     hint.textContent = state.mode === "ritiro"
       ? "POS disponibile in negozio al momento del ritiro."
       : "Il rider porterà il POS alla consegna.";
+    changeWrap.style.display = "none";
   } else {
     hint.classList.remove("show");
+    changeWrap.style.display = "block";
   }
 }
 
@@ -1011,6 +1020,7 @@ $("#address").addEventListener("input", e => {
   renderCart();
 });
 $("#riderNote").addEventListener("input", e => { state.riderNote = e.target.value.trim(); renderCart(); });
+$("#changeNote").addEventListener("input", e => { state.changeNote = e.target.value.trim(); renderCart(); });
 $("#note").addEventListener("input", e => { state.note = e.target.value.trim(); renderCart(); });
 
 /* ============== CART ============== */
@@ -1106,21 +1116,25 @@ function renderCart(){
 function buildOrderMessage(lines,total){
   const dt = new Date();
   const stamp = dt.toLocaleString("it-IT",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});
-  let msg = `*Nuovo ordine — ${CONFIG.shopName}*\n`;
-  msg += `${stamp}\n\n`;
+  let msg = `🍔 *Nuovo ordine — ${CONFIG.shopName}*\n`;
+  msg += `🕒 ${stamp}\n`;
   if (state.mode === "ritiro"){
-    msg += `*Modalità:* Ritiro in negozio\n`;
+    msg += `🥡 Ritiro in negozio\n`;
   } else {
-    msg += `*Modalità:* Consegna a domicilio\n`;
-    msg += `*Indirizzo:* ${state.address}\n`;
-    if (state.riderNote) msg += `*Note rider:* ${state.riderNote}\n`;
+    msg += `🛵 Consegna a domicilio\n`;
+    msg += `📍 ${state.address}\n`;
+    if (state.riderNote) msg += `🛎️ Rider: ${state.riderNote}\n`;
   }
   if (state.timing === "dopo" && state.timeWhen){
-    msg += `*Quando:* Per le ${state.timeWhen}\n`;
+    msg += `⏰ Per le ${state.timeWhen}\n`;
   } else {
-    msg += `*Quando:* Subito\n`;
+    msg += `⚡ Subito\n`;
   }
-  msg += `*Pagamento:* ${state.payment === "carta" ? "Carta (POS necessario)" : "Contanti"}\n\n`;
+  msg += `${state.payment === "carta" ? "💳" : "💶"} Pagamento: ${state.payment === "carta" ? "Carta (POS necessario)" : "Contanti"}\n`;
+  if (state.payment === "contanti" && state.changeNote){
+    msg += `💵 Resto: ${state.changeNote}\n`;
+  }
+  msg += `\n`;
   msg += `*Ordine:*\n`;
   lines.forEach(l => {
     msg += `• ${l.qty}× ${l.label}`;
@@ -1128,7 +1142,7 @@ function buildOrderMessage(lines,total){
     msg += ` — ${fmt(l.unit*l.qty)}\n`;
   });
   msg += `\n*Totale: ${fmt(total)}*`;
-  if (state.note) msg += `\n\n*Note:* ${state.note}`;
+  if (state.note) msg += `\n\n📝 _Note:_ ${state.note}`;
   msg += `\n\n— inviato dal menu online —`;
   return msg;
 }
