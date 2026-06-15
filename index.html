@@ -401,7 +401,7 @@
     </div>
     <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:10px 0 6px;letter-spacing:.5px">Farcitura</div>
     <div class="ingredients" id="pattyciokFilling"></div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Gusto <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none;letter-spacing:0">(scegli 1 o 2)</span></div>
+    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Gusto <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none;letter-spacing:0">(uno o più)</span></div>
     <div class="ingredients" id="pattyciokFlavour"></div>
     <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Topping <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none">(opzionali)</span></div>
     <div class="ingredients" id="pattyciokToppings"></div>
@@ -771,21 +771,15 @@ function renderPattyciok(){
     }, f.name, el("span",{class:"x"},"+"+f.price.toFixed(2).replace(".",",")+CONFIG.currency)));
   });
 
-  // Flavours (multi-select, max 2)
+  // Flavours (multi-select, up to 3)
   const fl = $("#pattyciokFlavour"); fl.innerHTML = "";
-  const atLimit = pattyciokSel.flavours.size >= 2;
   PATTYCIOK.flavours.forEach(f => {
     const on = pattyciokSel.flavours.has(f.id);
-    const disabled = !on && atLimit;
     fl.append(el("div", {
-      class:"chip"+(on?" on":"")+(disabled?" disabled":""),
+      class:"chip"+(on?" on":""),
       onclick:()=>{
-        if (on){
-          pattyciokSel.flavours.delete(f.id);
-        } else if (!disabled){
-          pattyciokSel.flavours.add(f.id);
-        }
-        // If user taps a 3rd chip while at limit: do nothing
+        if (on) pattyciokSel.flavours.delete(f.id);
+        else pattyciokSel.flavours.add(f.id);
         renderPattyciok();
       }
     }, f.name));
@@ -794,10 +788,10 @@ function renderPattyciok(){
   // Update preview photo based on selected flavours:
   //  - 0 selected → default (Nutella)
   //  - 1 selected → that flavour's photo
-  //  - 2 selected → Nutella (default)
+  //  - 2 or 3 selected → Nutella (default)
   const photoEl = $("#pattyciokPhoto");
   if (photoEl){
-    let newSrc = PATTYCIOK.photo; // default = Nutella, also used when 2 are selected
+    let newSrc = PATTYCIOK.photo; // default = Nutella, also used when 2+ are selected
     if (pattyciokSel.flavours.size === 1){
       const id = [...pattyciokSel.flavours][0];
       const sel = PATTYCIOK.flavours.find(x=>x.id===id);
@@ -1112,21 +1106,21 @@ function renderCart(){
 function buildOrderMessage(lines,total){
   const dt = new Date();
   const stamp = dt.toLocaleString("it-IT",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});
-  let msg = `🍔 *Nuovo ordine — ${CONFIG.shopName}*\n`;
-  msg += `🕒 ${stamp}\n`;
+  let msg = `*Nuovo ordine — ${CONFIG.shopName}*\n`;
+  msg += `${stamp}\n\n`;
   if (state.mode === "ritiro"){
-    msg += `🥡 Ritiro in negozio\n`;
+    msg += `*Modalità:* Ritiro in negozio\n`;
   } else {
-    msg += `🛵 Consegna a domicilio\n`;
-    msg += `📍 ${state.address}\n`;
-    if (state.riderNote) msg += `🛎️ Rider: ${state.riderNote}\n`;
+    msg += `*Modalità:* Consegna a domicilio\n`;
+    msg += `*Indirizzo:* ${state.address}\n`;
+    if (state.riderNote) msg += `*Note rider:* ${state.riderNote}\n`;
   }
   if (state.timing === "dopo" && state.timeWhen){
-    msg += `⏰ Per le ${state.timeWhen}\n`;
+    msg += `*Quando:* Per le ${state.timeWhen}\n`;
   } else {
-    msg += `⚡ Subito\n`;
+    msg += `*Quando:* Subito\n`;
   }
-  msg += `${state.payment === "carta" ? "💳" : "💶"} Pagamento: ${state.payment === "carta" ? "Carta (POS necessario)" : "Contanti"}\n\n`;
+  msg += `*Pagamento:* ${state.payment === "carta" ? "Carta (POS necessario)" : "Contanti"}\n\n`;
   msg += `*Ordine:*\n`;
   lines.forEach(l => {
     msg += `• ${l.qty}× ${l.label}`;
@@ -1134,7 +1128,7 @@ function buildOrderMessage(lines,total){
     msg += ` — ${fmt(l.unit*l.qty)}\n`;
   });
   msg += `\n*Totale: ${fmt(total)}*`;
-  if (state.note) msg += `\n\n📝 _Note:_ ${state.note}`;
+  if (state.note) msg += `\n\n*Note:* ${state.note}`;
   msg += `\n\n— inviato dal menu online —`;
   return msg;
 }
