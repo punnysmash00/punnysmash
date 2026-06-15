@@ -278,6 +278,8 @@
   .cart-line .lname small{display:block;font-weight:400;color:var(--ink-soft);font-size:12px;line-height:1.3;margin-top:2px}
   .cart-line .lprice{font-family:'JetBrains Mono',monospace;white-space:nowrap}
   .cart-line button{border:0;background:transparent;color:var(--accent-deep);font-size:18px;cursor:pointer;padding:0 4px}
+  .cart-line.delivery-line{color:var(--ink-soft);font-style:italic}
+  .cart-line.delivery-line .lname::before{content:"🛵 ";font-style:normal}
   .empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:14px 0}
 
   /* Sticky checkout */
@@ -495,6 +497,7 @@ const CONFIG = {
 };
 
 /* ============== MENU ============== */
+const DELIVERY_FEE = 2.50;
 /* In "photo" inserisci il path al file immagine.
    Se il file non esiste, viene mostrato un placeholder a strisce. */
 const BURGERS = [
@@ -1092,6 +1095,14 @@ function renderCart(){
         el("button",{onclick:()=>removeLine(l.key)},"✕")
       ));
     });
+    // Delivery fee (consegna only)
+    if (state.mode === "consegna"){
+      total += DELIVERY_FEE;
+      list.append(el("div",{class:"cart-line delivery-line"},
+        el("div",{class:"lname"}, "Spese di consegna"),
+        el("div",{class:"lprice"}, fmt(DELIVERY_FEE)),
+      ));
+    }
   }
   $("#grandTotal").textContent = fmt(total);
   const btn = $("#waBtn");
@@ -1141,6 +1152,9 @@ function buildOrderMessage(lines,total){
     if (l.sub) msg += ` _(${l.sub})_`;
     msg += ` — ${fmt(l.unit*l.qty)}\n`;
   });
+  if (state.mode === "consegna"){
+    msg += `• Spese di consegna — ${fmt(DELIVERY_FEE)}\n`;
+  }
   msg += `\n*Totale: ${fmt(total)}*`;
   if (state.note) msg += `\n\n📝 _Note:_ ${state.note}`;
   msg += `\n\n— inviato dal menu online —`;
