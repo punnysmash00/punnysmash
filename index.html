@@ -340,14 +340,14 @@
       <div class="row-photo" style="width:64px;height:64px;border-radius:12px"><img src="img/componilotu.jpeg" alt="Componilo tu" onerror="this.parentNode.innerHTML='<div class=ph-placeholder>Componilo tu</div>'"></div>
       <div style="flex:1;min-width:0">
         <h3 style="margin:0">Crea il tuo smash</h3>
-        <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Base 5,00 € (potato bun). Aggiungi carne, formaggi, salse e contorni a scelta.</div>
+        <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Base 3,00 € (potato bun). Aggiungi carne, formaggi, salse e contorni a scelta.</div>
       </div>
     </div>
     <div class="ingredients" id="ingredients"></div>
     <div class="composer-foot">
       <div class="price">
         <small>Totale custom</small>
-        <span id="customPrice">5,00 €</span>
+        <span id="customPrice">3,00 €</span>
       </div>
       <button class="add-btn" id="addCustom">Aggiungi all'ordine</button>
     </div>
@@ -510,19 +510,19 @@ const BURGERS = [
   { id:"chicken",  name:"Punny Chicken",       price:8.50, photo:"img/punnychicken.jpeg",       desc:"Pollo fritto croccante succoso, bacon, lattuga, pomodoro, mayo soia teriyaki" },
 ];
 
-const CUSTOM_BASE = 5.00;
+const CUSTOM_BASE = 3.00;
 const INGREDIENTS = [
-  { id:"carne",     name:"Carne x2 Patty Smashed Beef/Pork", price:3.00 },
-  { id:"pollo",     name:"Pollo Crunchy Fried",              price:3.00 },
-  { id:"bacon",     name:"Bacon",                            price:1.50 },
+  { id:"carne",     name:"Carne x2 Patty Smashed Beef/Pork", price:4.00 },
+  { id:"pollo",     name:"Pollo Crunchy Fried",              price:4.00 },
+  { id:"bacon",     name:"Bacon",                            price:1.00 },
   { id:"pickled",   name:"Cetriolini Pickled",               price:0.50 },
-  { id:"cheddar",   name:"Cheddar Fette",                    price:1.00 },
-  { id:"cipolla",   name:"Cipolla Caramellata",              price:1.00 },
+  { id:"cheddar",   name:"Cheddar Fette",                    price:0.50 },
+  { id:"cipolla",   name:"Cipolla Caramellata",              price:0.50 },
   { id:"lattuga",   name:"Lattuga",                          price:0.50 },
   { id:"pomodoro",  name:"Pomodoro Fette",                   price:0.50 },
   { id:"parmi",     name:"Salsa Parmigiano",                 price:0.50 },
-  { id:"provola",   name:"Provola Smoked",                   price:1.00 },
-  { id:"uovo",      name:"Uovo Fried",                       price:1.00 },
+  { id:"provola",   name:"Provola Smoked",                   price:0.50 },
+  { id:"uovo",      name:"Uovo Fried",                       price:0.50 },
   { id:"ketchup",   name:"Ketchup",                          price:0.50 },
   { id:"mayo",      name:"Maionese",                         price:0.50 },
   { id:"sCheddar",  name:"Salsa Cheddar",                    price:0.50 },
@@ -531,7 +531,7 @@ const INGREDIENTS = [
   { id:"patClass",  name:"Patatine Classic Gialle Fried",    price:0.50 },
   { id:"patDolci",  name:"Patate Arancioni Dolci Fried",     price:0.50 },
   { id:"teriyaki",  name:"Mayo Soia Teriyaki",               price:0.50 },
-  { id:"cipCrunch", name:"Cipolla Crunchy Fried",            price:1.00 },
+  { id:"cipCrunch", name:"Cipolla Crunchy Fried",            price:0.50 },
   { id:"bbq",       name:"Salsa BBQ",                        price:0.50 },
   { id:"caesar",    name:"Salsa Caesar",                     price:0.50 },
   { id:"curry",     name:"Salsa Curry & Mango",              price:0.50 },
