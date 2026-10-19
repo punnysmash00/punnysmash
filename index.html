@@ -1,1249 +1,956 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Punny Smash · Ordina</title>
-<link rel="icon" href="logo.png" type="image/png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Punny Smash — Smash burger a Cava de' Tirreni</title>
+<meta name="description" content="Punny Smash, fast food di smash burger a Cava de' Tirreni: potato bun, doppio disco di carne schiacciato (100 g × 2), fritti, salse e birre in bottiglia. Corso Umberto I 34. Aperti tutte le sere dalle 19.">
+<meta property="og:type" content="restaurant">
+<meta property="og:title" content="Punny Smash — Smash burger a Cava de' Tirreni">
+<meta property="og:description" content="Potato bun, doppio disco schiacciato sulla piastra (100 g × 2), reazione di Maillard. Corso Umberto I 34, Cava de' Tirreni. Aperti dalle 19:00.">
+<meta property="og:image" content="assets/img/og.jpg">
+<meta property="og:locale" content="it_IT">
+<meta name="theme-color" content="#d0452f">
+<link rel="icon" href="assets/img/logo-mark.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/logo-mark-512.png">
+<!-- Font self-hostati (solo latino, solo i pesi usati): niente terze parti. -->
+<link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/baloo2-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- Immagine principale della hero: è l'elemento più grande al primo paint.
+     Il preload usa le stesse candidate della hero, così scarica la misura giusta. -->
+<link rel="preload" as="image" type="image/webp" fetchpriority="high"
+      imagesrcset="assets/img/burger-in-mano-480.webp 480w, assets/img/burger-in-mano-720.webp 720w, assets/img/burger-in-mano.webp 960w"
+      imagesizes="(max-width: 980px) 92vw, 520px">
 <style>
-  :root{
-    --bg:#fdf6ec;
-    --paper:#fffaf2;
-    --ink:#1a1410;
-    --ink-soft:#4a3f37;
-    --accent:#e94e1b;
-    --accent-deep:#b8390f;
-    --line:#1a1410;
-    --muted:#8a7a6b;
-    --ok:#25D366;
-    --ok-deep:#128C7E;
-    --shadow: 0 2px 0 var(--ink);
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:16px;line-height:1.4}
-  body{
-    background-image:
-      radial-gradient(circle at 20% 10%, rgba(233,78,27,.06), transparent 40%),
-      radial-gradient(circle at 80% 90%, rgba(233,78,27,.05), transparent 40%);
-    min-height:100vh;
-    padding-bottom:120px;
-  }
+/* ==========================================================================
+   Punny Smash — Cava de' Tirreni
+   Palette: rosso insegna, ambra logo, crema carta da menu, nero contorni
+   ========================================================================== */
 
-  /* Menu intro banner */
-  .menu-intro{
-    background:var(--paper);
-    border:2px solid var(--ink);
-    border-radius:14px;
-    padding:14px 16px;
-    margin:14px 0 4px;
-    box-shadow: 4px 4px 0 var(--ink);
-  }
-  .menu-intro h2{
-    font-family:'Archivo Black',sans-serif;
-    font-size:26px;
-    margin:0 0 6px;
-    letter-spacing:.5px;
-    line-height:1;
-    text-align:center;
-    text-transform:uppercase;
-    color:var(--ink);
-  }
-  .menu-intro h2 .amp{
-    color:var(--accent);
-    font-size:32px;
-    vertical-align:-2px;
-  }
-  .menu-intro .specs{
-    color:var(--accent);
-    font-family:'Archivo Black',sans-serif;
-    text-transform:uppercase;
-    font-size:11.5px;
-    letter-spacing:.3px;
-    line-height:1.35;
-    margin-top:6px;
-  }
-  .menu-intro .specs p{margin:2px 0;display:flex;align-items:flex-start;gap:6px}
-  .menu-intro .specs p::before{
-    content:"";
-    width:8px;height:2px;
-    background:var(--accent);
-    flex-shrink:0;
-    margin-top:8px;
-  }
-  header.top{
-    padding:14px 18px;
-    border-bottom:2px solid var(--ink);
-    background:var(--paper);
-    position:sticky; top:0; z-index:10;
-    transition: padding .25s ease;
-  }
-  header.top.shrunk{
-    padding:8px 18px;
-  }
-  .brand{display:flex;align-items:center;gap:12px;transition: gap .25s ease}
-  header.top.shrunk .brand{gap:10px}
-  .brand-logo{
-    width:108px;height:108px;border-radius:50%;
-    overflow:hidden;border:2px solid var(--ink);
-    box-shadow: var(--shadow);
-    background:var(--paper);flex-shrink:0;
-    transition: width .25s ease, height .25s ease;
-  }
-  header.top.shrunk .brand-logo{
-    width:50px;height:50px;
-  }
-  .brand-logo img{width:100%;height:100%;object-fit:cover;display:block}
-  .brand-text{display:flex;flex-direction:column;justify-content:center;min-width:0;flex:1}
-  .brand-scritta{
-    height:95px;
-    width:auto;
-    max-width:100%;
-    display:block;
-    object-fit:contain;
-    object-position:left center;
-    transition: height .25s ease;
-  }
-  header.top.shrunk .brand-scritta{
-    height:40px;
-  }
+/* Font ospitati qui: solo subset latino (contiene €), solo i pesi usati.
+   Inter è variabile, quindi un file copre 400→800. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Baloo 2";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("assets/fonts/baloo2-800-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
-  /* Sections */
-  main{padding:18px}
-  h2.section-title{
-    font-family:'Archivo Black',sans-serif;
-    font-size:22px;
-    margin:28px 0 14px;
-    letter-spacing:.5px;line-height:1;
-    background:var(--ink);
-    color:var(--paper);
-    border:2px solid var(--ink);
-    border-radius:10px;
-    padding:10px 14px;
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
-    box-shadow: 3px 3px 0 var(--accent);
-    text-transform:uppercase;
-  }
-  h2.section-title em{
-    font-style:normal;color:var(--accent);
-    font-size:11px;
-    font-family:'JetBrains Mono',monospace;
-    letter-spacing:1.5px;
-    background:var(--paper);
-    padding:4px 8px;
-    border-radius:6px;
-    white-space:nowrap;
-  }
+:root {
+  --red: #d0452f;
+  --red-dark: #a8341f;
+  --red-soft: #fbe3dd;
+  --amber: #f2a93b;
+  --amber-soft: #ffd88f;
+  --ink: #1b1512;
+  --ink-soft: #3b322c;
+  --muted: #6f6459;
+  --cream: #fff8ee;
+  --cream-2: #fdf1e0;
+  --card: #ffffff;
+  --line: #ece0d1;
+  --shadow: 0 10px 30px rgba(28, 18, 12, .09);
+  --shadow-lg: 0 22px 60px rgba(28, 18, 12, .16);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --wrap: 1160px;
+  --header-h: 74px;
+  --display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --text: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
 
-  /* Burger cards with photo */
-  .burger{
-    background:var(--paper);border:2px solid var(--ink);border-radius:14px;
-    padding:0;margin-bottom:14px;
-    box-shadow: 4px 4px 0 var(--ink);
-    position:relative;overflow:hidden;
-    display:flex;flex-direction:row;
-    transition:transform .15s ease;
-  }
-  .burger.selected{background:#fff3e6;transform:translate(-2px,-2px);box-shadow: 6px 6px 0 var(--accent)}
-  .burger-photo{
-    width:110px;min-width:110px;
-    background:#f0e6d8;position:relative;overflow:hidden;
-    border-right:2px solid var(--ink);
-  }
-  .burger-photo img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0}
-  .burger-photo .ph-placeholder{
-    width:100%;height:100%;position:absolute;inset:0;
-    display:grid;place-items:center;
-    background:repeating-linear-gradient(45deg, #f0e6d8, #f0e6d8 8px, #e8dcc8 8px, #e8dcc8 16px);
-    color:var(--muted);font-family:'Archivo Black',sans-serif;font-size:11px;text-align:center;padding:6px;
-  }
-  .burger-body{flex:1;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;min-width:0}
-  .burger-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-  .burger-name{font-family:'Archivo Black',sans-serif;font-size:17px;line-height:1.05;margin:0;text-transform:uppercase}
-  .burger-price{font-family:'Archivo Black',sans-serif;font-size:18px;color:var(--accent);white-space:nowrap}
-  .burger-desc{font-size:12.5px;color:var(--ink-soft);margin:6px 0 10px;line-height:1.4}
-  .burger-controls{display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .qty{display:inline-flex;align-items:center;border:2px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--paper)}
-  .qty button{width:32px;height:32px;border:0;background:transparent;font-family:'Archivo Black',sans-serif;font-size:16px;color:var(--ink);cursor:pointer}
-  .qty button:active{background:var(--accent);color:#fff}
-  .qty span{min-width:24px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600}
-  .add-btn{background:var(--ink);color:var(--paper);border:0;border-radius:999px;padding:8px 12px;font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;text-transform:uppercase}
-  .add-btn:active{background:var(--accent)}
+*, *::before, *::after { box-sizing: border-box; }
 
-  @media (max-width:380px){
-    .burger-photo{width:96px;min-width:96px}
-    .burger-name{font-size:15px}
-    .burger-price{font-size:16px}
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 14px);
+}
 
-  /* Composer */
-  .composer{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:14px;box-shadow:4px 4px 0 var(--ink)}
-  .composer h3{font-family:'Archivo Black',sans-serif;font-size:18px;margin:0 0 4px;text-transform:uppercase}
-  .composer .hint{font-size:12px;color:var(--ink-soft);margin-bottom:12px}
-  .ingredients{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{
-    display:inline-flex;align-items:center;gap:6px;
-    border:2px solid var(--ink);background:var(--paper);
-    border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;
-    user-select:none;
-  }
-  .chip.on{background:var(--accent);color:#fff;border-color:var(--accent-deep)}
-  .chip.disabled{opacity:.35;cursor:not-allowed}
-  .chip .x{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.7}
-  .composer-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px}
-  .composer-foot .price{font-family:'Archivo Black',sans-serif;font-size:22px}
-  .composer-foot .price small{font-family:'Bricolage Grotesque',sans-serif;font-size:11px;font-weight:600;color:var(--ink-soft);display:block;line-height:1;margin-bottom:2px}
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font: 400 17px/1.6 var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 
-  /* Sides / drinks rows with photo */
-  .row-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed rgba(26,20,16,.18)}
-  .row-item:last-child{border-bottom:0}
-  .row-photo{
-    width:50px;height:50px;border-radius:10px;
-    border:2px solid var(--ink);overflow:hidden;
-    background:#f0e6d8;flex-shrink:0;position:relative;
-  }
-  .row-photo img{width:100%;height:100%;object-fit:cover;display:block}
-  .row-photo .ph-placeholder{
-    width:100%;height:100%;position:absolute;inset:0;
-    background:repeating-linear-gradient(45deg, #f0e6d8, #f0e6d8 6px, #e8dcc8 6px, #e8dcc8 12px);
-  }
-  .row-main{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-  .row-name{font-size:15px;font-weight:600;min-width:0}
-  .row-name small{display:block;font-size:11px;color:var(--ink-soft);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
-  .row-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-  .row-price{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-soft)}
-  .card-block{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:6px 14px;box-shadow:4px 4px 0 var(--ink)}
+/* Le sezioni ancorate non finiscono sotto la barra sticky. */
+main > section[id], footer[id] { scroll-margin-top: calc(var(--header-h) + 14px); }
 
-  .sauces-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;padding-bottom:10px}
-  .sauces-grid .chip{padding:6px 10px;font-size:12px}
+img, iframe { max-width: 100%; display: block; }
+img { height: auto; }
 
-  .note-box{background:var(--paper);border:2px dashed var(--ink);border-radius:14px;padding:12px}
-  .note-box label{display:block;font-family:'Archivo Black',sans-serif;font-size:13px;margin-bottom:6px;text-transform:uppercase}
-  .note-box textarea, .note-box input{width:100%;border:0;background:transparent;font-family:inherit;font-size:14px;resize:none;outline:none;color:var(--ink);padding:0}
+h1, h2, h3 {
+  font-family: var(--display);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -.01em;
+  margin: 0;
+}
 
-  /* Toggle rows (mode / payment) */
-  .toggle-row{display:flex;gap:8px;margin-top:8px}
-  .toggle-row button{
-    flex:1;padding:14px 8px;border:2px solid var(--ink);background:var(--paper);
-    font-family:'Archivo Black',sans-serif;font-size:13px;border-radius:10px;cursor:pointer;
-    text-transform:uppercase;
-    display:flex;flex-direction:column;align-items:center;gap:4px;
-  }
-  .toggle-row button .icon{font-size:20px;line-height:1}
-  .toggle-row button.on{background:var(--ink);color:var(--paper)}
-  .toggle-row button.on.card{background:var(--accent);color:#fff;border-color:var(--accent-deep)}
+h1 { font-size: clamp(2.35rem, 5.4vw, 4rem); }
+h2 { font-size: clamp(1.75rem, 3.4vw, 2.6rem); }
+h3 { font-size: 1.35rem; }
 
-  .pay-hint{
-    margin-top:8px;font-size:12px;color:var(--ink-soft);
-    background:#fff3e6;border:1px dashed var(--accent);
-    padding:8px 12px;border-radius:10px;display:none;
-  }
-  .pay-hint.show{display:block}
+p { margin: 0 0 1rem; }
+a { color: var(--red-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+a:hover { color: var(--red); }
 
-  /* Required field indicator */
-  .note-box.required label::after{
-    content:" *";
-    color:var(--accent);
-    font-size:16px;
-  }
-  .note-box.error{
-    border-color:var(--accent);
-    border-style:solid;
-    background:#fff3e6;
-    animation: shake .3s ease-in-out;
-  }
-  @keyframes shake{
-    0%,100%{transform:translateX(0)}
-    25%{transform:translateX(-4px)}
-    75%{transform:translateX(4px)}
-  }
-  .field-warn{
-    color:var(--accent-deep);
-    font-size:11px;
-    font-weight:600;
-    margin-top:6px;
-    text-transform:uppercase;
-    letter-spacing:.5px;
-    display:none;
-  }
-  .field-warn.show{display:block}
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
 
-  /* Cart */
-  .cart-list{margin:8px 0 0}
-  .cart-line{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;font-size:14px;padding:8px 0;border-bottom:1px dashed rgba(26,20,16,.15)}
-  .cart-line:last-child{border-bottom:0}
-  .cart-line .lname{font-weight:600;flex:1;min-width:0}
-  .cart-line .lname small{display:block;font-weight:400;color:var(--ink-soft);font-size:12px;line-height:1.3;margin-top:2px}
-  .cart-line .lprice{font-family:'JetBrains Mono',monospace;white-space:nowrap}
-  .cart-line button{border:0;background:transparent;color:var(--accent-deep);font-size:18px;cursor:pointer;padding:0 4px}
-  .cart-line.delivery-line{color:var(--ink-soft);font-style:italic}
-  .cart-line.delivery-line .lname::before{content:"🛵 ";font-style:normal}
-  .empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:14px 0}
+.wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 22px; }
 
-  /* Sticky checkout */
-  .checkout-bar{
-    position:fixed;left:0;right:0;bottom:0;
-    background:var(--paper);border-top:2px solid var(--ink);
-    padding:12px 14px calc(12px + env(safe-area-inset-bottom));
-    display:flex;align-items:center;gap:10px;z-index:20;
-    box-shadow: 0 -6px 14px rgba(0,0,0,.06);
-  }
-  .checkout-total{flex:1;line-height:1.1}
-  .checkout-total small{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:1px;display:block}
-  .checkout-total b{font-family:'Archivo Black',sans-serif;font-size:24px}
-  .wa-btn{
-    background:var(--ok);color:#fff;border:2px solid var(--ink);
-    padding:14px 18px;border-radius:999px;font-family:'Archivo Black',sans-serif;font-size:14px;
-    display:inline-flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;
-    text-transform:uppercase;letter-spacing:.5px;
-    box-shadow:3px 3px 0 var(--ink);
-  }
-  .wa-btn[aria-disabled="true"]{opacity:.4;cursor:not-allowed;box-shadow:none;pointer-events:none}
-  .wa-btn svg{width:18px;height:18px;fill:#fff}
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
 
-  footer{padding:16px;text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 60;
+  background: var(--ink); color: #fff; padding: .7rem 1rem; border-radius: 0 0 10px 0;
+}
+.skip:focus { left: 0; color: #fff; }
+
+/* ---------- Bottoni ------------------------------------------------------ */
+
+.btn {
+  --btn-bg: var(--red);
+  --btn-fg: #fff;
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  padding: .72rem 1.15rem;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font: 600 .96rem/1 var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 44px;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform .14s ease, box-shadow .14s ease, background .14s ease;
+}
+.btn:hover { color: var(--btn-fg); transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--ink); }
+.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+.btn--lg { padding: .95rem 1.5rem; font-size: 1.03rem; }
+.btn--solid { --btn-bg: var(--red); --btn-fg: #fff; }
+.btn--outline { --btn-bg: #fff; --btn-fg: var(--ink); }
+.btn--ghost { --btn-bg: transparent; --btn-fg: var(--ink); box-shadow: none; }
+.btn--ghost:hover { --btn-bg: #fff; box-shadow: none; }
+
+/* ---------- Top bar ------------------------------------------------------ */
+
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255, 248, 238, .92);
+  backdrop-filter: saturate(160%) blur(10px);
+  border-bottom: 2px solid var(--ink);
+}
+.topbar__in { display: flex; align-items: center; gap: 1rem; min-height: 72px; }
+
+.brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; color: var(--ink); }
+.brand:hover { color: var(--ink); }
+.brand__mark { width: 44px; height: 44px; }
+.brand__name {
+  font-family: var(--display); font-weight: 800; font-size: 1.3rem;
+  letter-spacing: -.02em; text-transform: uppercase;
+}
+
+.nav { display: flex; gap: 1.4rem; margin-left: auto; }
+.nav a {
+  color: var(--ink-soft); text-decoration: none; font-weight: 600; font-size: .97rem;
+  padding: .35rem 0; border-bottom: 3px solid transparent;
+}
+.nav a:hover { color: var(--red); border-bottom-color: var(--amber); }
+.nav a.is-current { color: var(--red); border-bottom-color: var(--red); }
+
+.topbar__cta { display: flex; align-items: center; gap: .6rem; }
+.topbar__cta .btn { padding: .58rem .95rem; font-size: .9rem; }
+
+.burger {
+  display: none; width: 46px; height: 46px; padding: 12px 9px;
+  background: #fff; border: 2px solid var(--ink); border-radius: 12px; cursor: pointer;
+  flex-direction: column; justify-content: center;
+}
+.burger span { display: block; height: 3px; background: var(--ink); border-radius: 2px; }
+.burger span + span { margin-top: 5px; }
+
+/* ---------- Hero --------------------------------------------------------- */
+
+.hero { position: relative; overflow: hidden; padding: clamp(2.4rem, 5vw, 4.4rem) 0 clamp(2rem, 4vw, 3.4rem); }
+.hero::before {
+  content: ""; position: absolute; inset: -20% 40% 40% -10%;
+  background: radial-gradient(closest-side, rgba(242, 169, 59, .38), transparent 70%);
+  pointer-events: none;
+}
+.hero__in {
+  position: relative;
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: clamp(2rem, 4vw, 3.5rem); align-items: center;
+}
+
+.eyebrow {
+  margin: 0 0 .7rem;
+  font-weight: 700; font-size: .82rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--red-dark); /* 6,2:1 su crema: sopra soglia AA per testo piccolo */
+}
+/* Eyebrow promosso a titolo di sezione (dove non serve un h2 descrittivo). */
+.eyebrow--title { font-size: 1.15rem; letter-spacing: .1em; margin-bottom: 0; }
+.hl { color: var(--red); }
+.lead { font-size: 1.1rem; color: var(--ink-soft); max-width: 46ch; }
+
+.hero__actions { display: flex; flex-wrap: wrap; gap: .7rem; margin: 1.6rem 0 1.4rem; }
+
+.status {
+  display: inline-flex; align-items: center; gap: .5rem;
+  margin: .4rem 0 0; padding: .45rem .85rem;
+  border: 2px solid var(--ink); border-radius: 999px;
+  font-weight: 700; font-size: .9rem; background: #fff;
+}
+.status::before { content: ""; width: .62rem; height: .62rem; border-radius: 50%; background: var(--muted); }
+.status.is-open::before { background: #2e9e57; }
+.status.is-closed::before { background: var(--red); }
+
+.hero__media { margin: 0; }
+.hero__media picture { display: block; }
+.hero__media img {
+  width: 100%; aspect-ratio: 4 / 5; object-fit: cover;
+  border: 3px solid var(--ink); border-radius: 24px; box-shadow: var(--shadow-lg);
+}
+
+/* ---------- Strip -------------------------------------------------------- */
+
+.strip { background: var(--ink); color: var(--cream); border-block: 3px solid var(--ink); }
+.strip__in { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; padding: 2.1rem 22px; }
+.strip h2 { font-size: 1.2rem; color: var(--amber); }
+.strip p { margin: .5rem 0 0; color: #efe4d8; font-size: .96rem; }
+
+/* ---------- Sezioni ------------------------------------------------------ */
+
+.section { padding: clamp(2.8rem, 6vw, 4.8rem) 0; }
+.section--alt { background: var(--cream-2); border-block: 2px solid var(--line); }
+.section__head { max-width: 62ch; margin-bottom: clamp(1.6rem, 3vw, 2.6rem); }
+.section__sub { color: var(--muted); margin-top: .8rem; }
+
+/* ---------- Menu --------------------------------------------------------- */
+
+.menu-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1.4rem; align-items: start; }
+.menu-col { display: grid; gap: 1.4rem; }
+
+.card {
+  background: var(--card); border: 2px solid var(--ink); border-radius: var(--radius);
+  padding: 1.4rem 1.4rem 1.1rem; box-shadow: var(--shadow);
+}
+.card--panini { border-top: 8px solid var(--red); }
+.card__title {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  font-size: 1.5rem; margin-bottom: .4rem;
+}
+.card__price { font: 600 .85rem/1 var(--text); color: var(--red); text-transform: uppercase; letter-spacing: .06em; }
+.card__note { color: var(--muted); font-size: .92rem; margin: 0 0 1rem; }
+
+.items { list-style: none; margin: 0; padding: 0; }
+.item { padding: .7rem 0; border-top: 1px dashed var(--line); }
+.item:first-child { border-top: 0; padding-top: .2rem; }
+.item__row { display: flex; align-items: baseline; gap: 1rem; margin: 0; }
+.item__name { font-weight: 700; font-size: 1.04rem; }
+/* Prezzi e valori numerici nel font di testo, non nel font display:
+   in Baloo 2 il glifo € è una C con le barre fuse, a corpo piccolo
+   si legge come tagliato. Inter ha un € pulito; i numeri sono tabulari. */
+.item__price {
+  margin-left: auto; white-space: nowrap;
+  font-family: var(--text); font-weight: 800; font-size: 1.05rem;
+  letter-spacing: -.015em;
+  color: var(--red);
+  font-variant-numeric: tabular-nums;
+}
+.item__desc { margin: .25rem 0 0; color: var(--muted); font-size: .93rem; }
+.item--top .item__name::after {
+  content: "il più ordinato"; display: inline-block; margin-left: .6rem;
+  padding: .1rem .5rem; border: 2px solid var(--ink); border-radius: 999px;
+  background: var(--amber-soft); font: 700 .68rem/1.5 var(--text);
+  text-transform: uppercase; letter-spacing: .05em; vertical-align: middle;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: .45rem; list-style: none; margin: 0; padding: 0; }
+.chips li {
+  padding: .38rem .78rem; border: 2px solid var(--ink); border-radius: 999px;
+  background: var(--amber-soft); font-size: .88rem; font-weight: 600;
+}
+.chips--soft li { background: #fff; font-weight: 500; color: var(--ink-soft); border-color: var(--line); }
+
+.menu-foot { margin: 1.6rem 0 0; color: var(--muted); font-size: .95rem; }
+
+/* ---------- Galleria ----------------------------------------------------- */
+
+/* Tre scatti scelti (ambiente, piatto, ordini): una fascia sola, tutte le
+   card 4:5 e didascalie allineate. Il menu è nella sezione qui sopra, in testo. */
+.gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; align-items: start; }
+.shot { margin: 0; }
+.shot__btn {
+  display: block; width: 100%; aspect-ratio: 4 / 5; padding: 0;
+  border: 2px solid var(--ink); border-radius: var(--radius);
+  background: #fff; overflow: hidden; cursor: zoom-in; box-shadow: var(--shadow);
+}
+.shot__btn picture { display: block; width: 100%; height: 100%; }
+.shot__btn img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.shot__btn:hover img { transform: scale(1.03); }
+.shot figcaption { margin-top: .55rem; font-size: .9rem; color: var(--muted); }
+
+/* ---------- Recensioni --------------------------------------------------- */
+
+/* Nastro a scorrimento continuo: 3 card per vista su desktop, 2 su tablet,
+   84% su telefono. Il movimento costante è in assets/app.js; si ferma solo
+   tenendo premuto su una recensione. Niente snap: combatte col movimento. */
+.reviews {
+  display: flex; align-items: stretch; gap: 1.2rem;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  padding-bottom: .6rem; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  /* Tenere premuto non deve selezionare il testo né aprire il menu contestuale. */
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+.reviews::-webkit-scrollbar { display: none; }
+/* Affordance: si può trascinare tenendo premuto. */
+.reviews { cursor: grab; }
+.reviews.is-dragging { cursor: grabbing; }
+.review {
+  flex: 0 0 calc((100% - 2.4rem) / 3);
+  display: flex; flex-direction: column; justify-content: space-between; gap: 1rem;
+  background: #fff; border: 2px solid var(--ink); border-radius: var(--radius);
+  padding: 1.3rem; box-shadow: var(--shadow);
+}
+.review__text { margin: 0; font-size: 1rem; }
+.review__text::before { content: "★★★★★"; display: block; color: var(--amber); letter-spacing: .12em; margin-bottom: .5rem; font-size: .95rem; }
+.review__meta { display: flex; align-items: baseline; justify-content: space-between; gap: .8rem; border-top: 1px dashed var(--line); padding-top: .7rem; }
+.review__author { font-weight: 700; font-size: .95rem; }
+.review__badge {
+  display: inline-block; margin-left: .35rem; padding: .06rem .42rem;
+  border: 2px solid var(--ink); border-radius: 999px; background: var(--red-soft);
+  font: 700 .66rem/1.5 var(--text); text-transform: uppercase; letter-spacing: .04em;
+}
+.review__date { color: var(--muted); font-size: .85rem; white-space: nowrap; }
+.reviews__cta { margin: 1.8rem 0 0; text-align: center; }
+
+/* ---------- Dove --------------------------------------------------------- */
+
+.dove { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(1.5rem, 3vw, 2.6rem); align-items: start; }
+.mini-title { font-size: 1.25rem; margin-bottom: .7rem; }
+
+.hours { width: 100%; border-collapse: collapse; background: #fff; border: 2px solid var(--ink); border-radius: var(--radius); overflow: hidden; }
+.hours th, .hours td { padding: .6rem .9rem; text-align: left; border-bottom: 1px solid var(--line); font-size: .96rem; }
+.hours th { font-weight: 600; }
+.hours td { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+.hours tr:last-child th, .hours tr:last-child td { border-bottom: 0; }
+.hours tr.is-today th, .hours tr.is-today td { background: var(--amber-soft); color: var(--ink); font-weight: 700; }
+
+.contact { font-style: normal; margin: 1.4rem 0; }
+.contact p { margin: 0 0 .8rem; }
+.contact__meta { color: var(--muted); font-size: .92rem; }
+.contact a, .foot a, .menu-foot a { display: inline-block; padding-block: .35rem; }
+
+.dove__actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.2rem; }
+
+.dove__map { position: relative; min-height: clamp(320px, 46vw, 520px); }
+/* L'iframe entra sopra il segnaposto e si mostra quando ha finito di caricare. */
+.dove__map iframe {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  border: 3px solid var(--ink); border-radius: var(--radius); background: #fff;
+  opacity: 0; transition: opacity .35s ease;
+}
+.dove__map iframe.is-ready { opacity: 1; }
+/* Targhetta sul riquadro: il pin dell'embed è anonimo (niente scheda Google). */
+.dove__maptag {
+  position: absolute; top: .8rem; left: .8rem; z-index: 2;
+  padding: .38rem .75rem; border: 2px solid var(--ink); border-radius: 999px;
+  background: rgba(255, 248, 238, .95);
+  font: 700 .76rem/1 var(--text); text-transform: uppercase; letter-spacing: .06em;
+  pointer-events: none;
+}
+.mapfacade {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem;
+  min-height: clamp(320px, 46vw, 520px); padding: 2rem 1.5rem; text-align: center;
+  border: 3px solid var(--ink); border-radius: var(--radius);
+  background: repeating-linear-gradient(45deg, var(--cream) 0 14px, var(--cream-2) 14px 28px);
+}
+.mapfacade__pin { color: var(--red); }
+.mapfacade__title { margin: 0; font-family: var(--display); font-weight: 800; font-size: 1.35rem; }
+.mapfacade__note { margin: 0 0 .4rem; color: var(--muted); font-size: .95rem; max-width: 38ch; }
+.mapfacade__link { font-weight: 600; }
+
+/* ---------- Footer ------------------------------------------------------- */
+
+.foot { background: var(--ink); color: #f3e9dd; border-top: 3px solid var(--ink); }
+.foot a { color: var(--amber); }
+.foot a:hover { color: #ffd88f; }
+.foot__in { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 1.6rem; padding: 2.6rem 22px 1.6rem; align-items: start; }
+.foot h2 { font-size: .82rem; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); margin-bottom: .5rem; }
+.foot p { margin: 0; font-size: .95rem; }
+.foot__brand img { width: 180px; height: auto; }
+.foot__bottom {
+  padding-bottom: 1.8rem; color: #bfb2a4; font-size: .86rem;
+}
+
+/* ---------- Lightbox ----------------------------------------------------- */
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 80;
+  display: flex; align-items: center; justify-content: center; padding: 3rem 1rem;
+  background: rgba(20, 14, 10, .88);
+}
+.lightbox[hidden] { display: none; }
+.lightbox img { max-width: min(100%, 1100px); max-height: 100%; width: auto; border: 3px solid var(--cream); border-radius: 14px; }
+.lightbox__close {
+  position: absolute; top: 1rem; right: 1.2rem;
+  width: 46px; height: 46px; border: 2px solid var(--cream); border-radius: 50%;
+  background: transparent; color: var(--cream); font-size: 1.7rem; line-height: 1; cursor: pointer;
+}
+.lightbox__close:hover { background: var(--red); }
+
+/* ---------- Responsive --------------------------------------------------- */
+
+@media (max-width: 980px) {
+  .hero__in { grid-template-columns: 1fr; }
+  .hero__media { order: -1; }
+  .hero__media img { aspect-ratio: 16 / 12; }
+  .strip__in { grid-template-columns: 1fr 1fr; }
+  .menu-grid { grid-template-columns: 1fr; }
+  .review { flex: 0 0 calc((100% - 1.2rem) / 2); }
+  .dove { grid-template-columns: 1fr; }
+  .foot__in { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 780px) {
+  :root { --header-h: 78px; }
+
+  .topbar__in { flex-wrap: wrap; padding-top: .55rem; padding-bottom: .55rem; }
+  .nav {
+    order: 3; flex-basis: 100%; flex-direction: column; gap: .1rem;
+    margin: .5rem 0 .7rem; padding: .5rem; border: 2px solid var(--ink); border-radius: var(--radius-sm);
+    background: #fff; box-shadow: var(--shadow);
+    max-height: calc(100dvh - var(--header-h) - 1.5rem); overflow-y: auto;
+  }
+  .nav:not(.is-open) { display: none; }
+  .nav a {
+    display: flex; align-items: center; min-height: 46px;
+    padding: .5rem .7rem; border-bottom: 1px solid var(--line); font-size: 1rem;
+  }
+  .nav a:last-child { border-bottom: 0; }
+  .burger { display: flex; order: 1; }
+  .topbar__cta { margin-left: auto; gap: .5rem; }
+  /* Restano le indicazioni (nel menu e nella sezione contatti) e il menu hamburger. */
+  .topbar__cta .btn--ghost { display: none; }
+  .btn--order { min-height: 46px; padding: 0 .9rem; box-shadow: none; }
+  /* Chiamata a destra del menu: solo icona, 46×46 come l'hamburger. */
+  .btn--call { order: 2; width: 46px; height: 46px; padding: 0; border-radius: 12px; box-shadow: none; }
+  .btn--call .btn__label { display: none; }
+  .btn--call .ico { width: 24px; height: 24px; }
+
+  /* Ritmo più stretto: la pagina mobile scende sotto le 8 schermate. */
+  .hero { padding-top: 1.4rem; }
+  .section { padding: 2.3rem 0; }
+  .section__head { margin-bottom: 1.3rem; }
+  .strip__in { grid-template-columns: 1fr; gap: 1rem; padding: 1.6rem 22px; }
+  .strip p { font-size: .94rem; }
+  .card { padding: 1.15rem 1.1rem .9rem; }
+  .item { padding: .6rem 0; }
+  .item__desc { font-size: .92rem; }
+
+  /* Galleria: griglia a 2 colonne; la terza foto chiude la fascia a tutta larghezza. */
+  .gallery { grid-template-columns: 1fr 1fr; gap: .8rem; }
+  .shot:last-child { grid-column: 1 / -1; }
+  .shot figcaption { font-size: .82rem; }
+
+  /* Recensioni: la card successiva si intravede, così si capisce che scorre. */
+  .reviews { align-items: flex-start; gap: .8rem; margin: 0 -22px; padding: 0 22px .8rem; scroll-padding-inline: 22px; }
+  .review { flex: 0 0 84%; }
+
+  .dove__map iframe { height: 320px; }
+}
+
+@media (max-width: 520px) {
+  .foot__in { grid-template-columns: 1fr 1fr; padding: 1.9rem 22px 1.2rem; gap: 1.1rem; }
+  .foot__brand { grid-column: 1 / -1; }
+  .foot__brand img { width: 148px; }
+}
+
+@media (max-width: 440px) {
+  /* Con Ordina, hamburger e chiamata il nome non ci sta: resta il logo. */
+  .brand__name { display: none; }
+}
+
+@media (max-width: 360px) {
+  /* Schermi molto stretti: brand compatto, così non tocca i due pulsanti. */
+  .brand__mark { width: 38px; height: 38px; }
+  .brand__name { font-size: 1.08rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FastFoodRestaurant",
+  "name": "Punny Smash",
+  "description": "Smash burger: potato bun, doppio disco di carne di manzo e maiale (100 g × 2) schiacciato sulla piastra. Fritti, salse e bibite. Consumazione sul posto, asporto e ordine online.",
+  "image": ["assets/img/burger-in-mano.jpg", "assets/img/smash-macro.jpg", "assets/img/locale.jpg"],
+  "servesCuisine": ["Hamburger", "Fast food", "Smash burger"],
+  "telephone": "+39 352 016 4365",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Corso Umberto I, 34",
+    "postalCode": "84013",
+    "addressLocality": "Cava de' Tirreni",
+    "addressRegion": "SA",
+    "addressCountry": "IT"
+  },
+  "geo": { "@type": "GeoCoordinates", "latitude": 40.6970526, "longitude": 14.7102268 },
+  "hasMap": "https://maps.app.goo.gl/rdHRGT6etQbTMYX26",
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Sunday"], "opens": "19:00", "closes": "02:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday","Saturday"], "opens": "19:00", "closes": "05:00" }
+  ],
+  "acceptsReservations": "False",
+  "paymentAccepted": "Carte di credito, carte di debito, pagamenti mobile NFC",
+  "amenityFeature": [
+    { "@type": "LocationFeatureSpecification", "name": "Consumazione sul posto", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Asporto", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Ordine online", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Adatto ai bambini", "value": true }
+  ]
+}
+</script>
 </head>
 <body>
 
-<div id="scrollSentinel" aria-hidden="true" style="position:absolute;top:0;left:0;width:1px;height:50px;pointer-events:none"></div>
+<a class="skip" href="#menu">Salta al menu</a>
 
-<header class="top">
-  <div class="brand">
-    <div class="brand-logo">
-      <img src="logo.png" alt="Punny Smash">
-    </div>
-    <div class="brand-text">
-      <img src="scritta.png" alt="Punny Smash" class="brand-scritta">
+<header class="topbar" id="top">
+  <div class="wrap topbar__in">
+    <a class="brand" href="#top" aria-label="Punny Smash — home">
+      <img class="brand__mark" src="assets/img/logo-mark.png" alt="Logo Punny Smash" width="44" height="44">
+      <span class="brand__name">Punny&nbsp;Smash</span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Navigazione principale">
+      <a href="#menu">Menu</a>
+      <a href="#locale">Il locale</a>
+      <a href="#recensioni">Recensioni</a>
+      <a href="#dove">Orari e contatti</a>
+      <a href="ordina/">Ordina online</a>
+    </nav>
+
+    <div class="topbar__cta">
+      <a class="btn btn--ghost" href="https://www.google.com/maps/dir/?api=1&amp;destination=Punny+Smash%2C+Corso+Umberto+I+34%2C+84013+Cava+de%27+Tirreni+SA" target="_blank" rel="noopener">Indicazioni</a>
+      <a class="btn btn--outline btn--order" href="ordina/">Ordina</a>
+      <a class="btn btn--solid btn--call" href="tel:+393520164365" aria-label="Chiama il locale, 352 016 4365">
+        <svg class="ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+          <path fill="currentColor" d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.25 1.02z"/>
+        </svg>
+        <span class="btn__label">Chiama</span>
+      </a>
+      <button class="burger" type="button" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="Apri il menu di navigazione">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </header>
 
 <main>
 
-  <div class="menu-intro">
-    <h2>Food <span class="amp">&amp;</span> Beverage</h2>
-    <div class="specs">
-      <p>Potato bun</p>
-      <p>Double beef/pork patty smashed: due dischi di carne di manzo/maiale (100g × 2) schiacciati e reazione Maillard</p>
+  <section class="hero">
+    <div class="wrap hero__in">
+      <div class="hero__copy">
+        <p class="eyebrow">Smash burger · Cava de' Tirreni (SA)</p>
+        <h1>Schiacciati sulla piastra, <span class="hl">uno per uno</span>.</h1>
+        <p class="lead">
+          Carne schiacciata sulla piastra al momento, crosta croccante e bun morbido.
+          Mangi al banco, prendi e vai o te lo portiamo a casa: Corso Umberto I 34, sotto i portici del centro.
+        </p>
+
+        <div class="hero__actions">
+          <a class="btn btn--solid btn--lg" href="ordina/">Ordina online</a>
+          <a class="btn btn--outline btn--lg" href="#menu">Guarda il menu</a>
+        </div>
+
+        <p class="status" data-status-pill hidden></p>
+      </div>
+
+      <figure class="hero__media">
+        <picture>
+          <source type="image/webp"
+                  srcset="assets/img/burger-in-mano-480.webp 480w, assets/img/burger-in-mano-720.webp 720w, assets/img/burger-in-mano.webp 960w"
+                  sizes="(max-width: 980px) 92vw, 520px">
+          <img src="assets/img/burger-in-mano.jpg" alt="Smash burger di Punny Smash tenuto in mano, con bacon e cheddar" width="960" height="1200" fetchpriority="high" decoding="async">
+        </picture>
+      </figure>
     </div>
-  </div>
+  </section>
 
-  <h2 class="section-title">Burger <em>// smash burgers</em></h2>
-  <div id="burgers"></div>
+  <section class="strip" aria-label="Come lavoriamo">
+    <div class="wrap strip__in">
+      <article>
+        <h2>Potato bun</h2>
+        <p>Il pane è un potato bun: morbido dentro, appena tostato fuori, non copre il sapore della carne.</p>
+      </article>
+      <article>
+        <h2>Due dischi, 100 g × 2</h2>
+        <p>Carne di manzo e maiale schiacciata sulla piastra bollente: più superficie a contatto, più crosta.</p>
+      </article>
+      <article>
+        <h2>Ordini al chiosco</h2>
+        <p>Chiosco self-ordering in sala, asporto e consumo sul posto. Paghi con carta, bancomat o contactless.</p>
+      </article>
+    </div>
+  </section>
 
-  <h2 class="section-title">Componilo tu <em>// custom</em></h2>
-  <div class="composer">
-    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">
-      <div class="row-photo" style="width:64px;height:64px;border-radius:12px"><img src="img/componilotu.jpeg" alt="Componilo tu" onerror="this.parentNode.innerHTML='<div class=ph-placeholder>Componilo tu</div>'"></div>
-      <div style="flex:1;min-width:0">
-        <h3 style="margin:0">Crea il tuo smash</h3>
-        <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Base 3,00 € (potato bun). Aggiungi carne, formaggi, salse e contorni a scelta.</div>
+  <section class="section" id="menu">
+    <div class="wrap">
+      <header class="section__head">
+        <p class="eyebrow">Menu Food &amp; Beverage</p>
+        <h2>Tutto quello che trovi in sala</h2>
+        <p class="section__sub">Prezzi come esposti sul menu del locale. Per allergie e intolleranze chiedi allo staff prima di ordinare.</p>
+      </header>
+
+      <div class="menu-grid">
+
+        <article class="card card--panini">
+          <h3 class="card__title">Panini</h3>
+          <p class="card__note">Tutti i panini: potato bun e doppio disco di carne di manzo e maiale (100 g × 2) schiacciato.</p>
+          <ul class="items">
+            <li class="item">
+              <p class="item__row"><span class="item__name">Cheeseburger</span><span class="item__price">8 €</span></p>
+              <p class="item__desc">Cheddar, carne x2, salsa smash.</p>
+            </li>
+            <li class="item">
+              <p class="item__row"><span class="item__name">Cheeseburger Bacon</span><span class="item__price">8,5 €</span></p>
+              <p class="item__desc">Cheddar, carne x2, salsa smash, bacon.</p>
+            </li>
+            <li class="item item--top">
+              <p class="item__row"><span class="item__name">Punny Smash</span><span class="item__price">9 €</span></p>
+              <p class="item__desc">Cheddar, carne x2, salsa smash, bacon, cetriolini pickle, cipolla caramellata.</p>
+            </li>
+            <li class="item">
+              <p class="item__row"><span class="item__name">Italian Smash</span><span class="item__price">8,5 €</span></p>
+              <p class="item__desc">Provola, salsa parmigiano, lattuga, pomodoro, carne x2.</p>
+            </li>
+            <li class="item">
+              <p class="item__row"><span class="item__name">Spicy Smash</span><span class="item__price">8,5 €</span></p>
+              <p class="item__desc">Salsa piccante hot, lattuga, pomodoro, carne x2, cheddar.</p>
+            </li>
+            <li class="item">
+              <p class="item__row"><span class="item__name">Punny Veggie</span><span class="item__price">8,5 €</span></p>
+              <p class="item__desc">Uovo fritto, salsa parmigiano, provola affumicata, cipolla caramellata, cetriolini pickle, lattuga, pomodoro, cipolla crunchy.</p>
+            </li>
+            <li class="item">
+              <p class="item__row"><span class="item__name">Punny Chicken</span><span class="item__price">8,5 €</span></p>
+              <p class="item__desc">Pollo fritto croccante, bacon, lattuga, pomodoro, mayo soia teriyaki.</p>
+            </li>
+            <li class="item">
+              <p class="item__row"><span class="item__name">Componilo tu…</span><span class="item__price">da 3 €</span></p>
+              <p class="item__desc">Scegli tu: carne x2, bacon, provola, uovo, cetriolini pickle, cipolla caramellata, lattuga, pomodoro, salsa piccante hot, salsa smash, cheddar, salsa parmigiano, maionese, ketchup.</p>
+            </li>
+          </ul>
+        </article>
+
+        <div class="menu-col">
+          <article class="card">
+            <h3 class="card__title">Fritti</h3>
+            <ul class="items">
+              <li class="item">
+                <p class="item__row"><span class="item__name">Patate dolci</span><span class="item__price">3,5 €</span></p>
+                <p class="item__desc">Sweet potatoes.</p>
+              </li>
+              <li class="item">
+                <p class="item__row"><span class="item__name">Patate classic stick</span><span class="item__price">3 €</span></p>
+              </li>
+              <li class="item">
+                <p class="item__row"><span class="item__name">Chicken nuggets</span><span class="item__price">4,5 €</span></p>
+              </li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3 class="card__title">Salse <span class="card__price">dip pot 0,50 €</span></h3>
+            <ul class="chips">
+              <li>Maionese</li>
+              <li>Ketchup</li>
+              <li>Salsa cesar</li>
+              <li>Curry &amp; mango</li>
+              <li>Senape e miele</li>
+              <li>Sweet &amp; sour</li>
+              <li>BBQ</li>
+              <li>Salsa piccante hot</li>
+              <li>Salsa smash</li>
+              <li>Salsa cheddar</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3 class="card__title">Bibite</h3>
+            <ul class="items">
+              <li class="item"><p class="item__row"><span class="item__name">Coca-Cola vetro</span><span class="item__price">2,5 €</span></p></li>
+              <li class="item"><p class="item__row"><span class="item__name">Coca-Cola Zero vetro</span><span class="item__price">2,5 €</span></p></li>
+              <li class="item"><p class="item__row"><span class="item__name">Acqua liscia</span><span class="item__price">1 €</span></p></li>
+              <li class="item"><p class="item__row"><span class="item__name">Acqua frizzante</span><span class="item__price">1 €</span></p></li>
+              <li class="item"><p class="item__row"><span class="item__name">Slalom birra vetro 9°</span><span class="item__price">3,5 €</span></p></li>
+              <li class="item"><p class="item__row"><span class="item__name">Jever birra vetro 4,9°</span><span class="item__price">3 €</span></p></li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3 class="card__title">Dolci &amp; milkshake</h3>
+            <ul class="items">
+              <li class="item">
+                <p class="item__row"><span class="item__name">Punny Milkshake</span><span class="item__price">da 3 €</span></p>
+                <p class="item__desc">Fiordilatte o fiordilatte e cioccolato, con topping a scelta.</p>
+              </li>
+              <li class="item">
+                <p class="item__row"><span class="item__name">Punny Pattyciok</span><span class="item__price">da 3 €</span></p>
+                <p class="item__desc">Potato bun farcito: Nutella, cioccolato fondente o bianco.</p>
+              </li>
+              <li class="item"><p class="item__row"><span class="item__name">Punny Biscuit</span><span class="item__price">3 €</span></p></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <p class="menu-foot">
+        Consegna a domicilio o ritiro: componi l'ordine online e invialo su WhatsApp.
+        <a href="ordina/">Ordina online</a> ·
+        <a href="tel:+393520164365">352 016 4365</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt" id="locale">
+    <div class="wrap">
+      <header class="section__head">
+        <p class="eyebrow">Il locale</p>
+        <h2>Sotto i portici di Corso Umberto I</h2>
+        <p class="section__sub">Sala casual, chiosco per ordinare da solo e banco ritiro. Le foto sono quelle della scheda Google dell'attività.</p>
+      </header>
+
+      <div class="gallery" id="gallery">
+        <figure class="shot">
+          <button type="button" class="shot__btn" data-full="assets/img/locale.webp">
+            <picture>
+              <source type="image/webp"
+                      srcset="assets/img/locale-320.webp 320w, assets/img/locale-480.webp 480w, assets/img/locale.webp 720w"
+                      sizes="(max-width: 780px) 45vw, (max-width: 980px) 33vw, 361px">
+              <img src="assets/img/locale.jpg" alt="Banco ordini di Punny Smash con insegna, vetrina bibite e schermi menu" width="720" height="900" loading="lazy" decoding="async">
+            </picture>
+          </button>
+          <figcaption>Il banco ordini e la vetrina delle bibite.</figcaption>
+        </figure>
+
+        <figure class="shot">
+          <button type="button" class="shot__btn" data-full="assets/img/smash-macro.webp">
+            <picture>
+              <source type="image/webp"
+                      srcset="assets/img/smash-macro-320.webp 320w, assets/img/smash-macro-480.webp 480w, assets/img/smash-macro.webp 720w"
+                      sizes="(max-width: 780px) 45vw, (max-width: 980px) 33vw, 361px">
+              <img src="assets/img/smash-macro.jpg" alt="Primo piano di smash burger con doppio disco, bacon e salsa cheddar" width="720" height="900" loading="lazy" decoding="async">
+            </picture>
+          </button>
+          <figcaption>Doppio disco, bacon, cheddar.</figcaption>
+        </figure>
+
+        <figure class="shot">
+          <button type="button" class="shot__btn" data-full="assets/img/self-ordering.webp">
+            <picture>
+              <source type="image/webp"
+                      srcset="assets/img/self-ordering-320.webp 320w, assets/img/self-ordering-480.webp 480w, assets/img/self-ordering.webp 720w"
+                      sizes="(max-width: 780px) 45vw, (max-width: 980px) 33vw, 361px">
+              <img src="assets/img/self-ordering.jpg" alt="Chiosco self-ordering di Punny Smash sotto l'insegna Fast Food Quality" width="720" height="900" loading="lazy" decoding="async">
+            </picture>
+          </button>
+          <figcaption>Chiosco self-ordering: ordini da solo, in fretta.</figcaption>
+        </figure>
       </div>
     </div>
-    <div class="ingredients" id="ingredients"></div>
-    <div class="composer-foot">
-      <div class="price">
-        <small>Totale custom</small>
-        <span id="customPrice">3,00 €</span>
+  </section>
+
+  <section class="section" id="recensioni">
+    <div class="wrap">
+      <header class="section__head">
+        <h2 class="eyebrow eyebrow--title">Recensioni</h2>
+      </header>
+
+      <div class="reviews" role="group" aria-label="Recensioni dei clienti su Google" tabindex="0">
+        <article class="review">
+          <p class="review__text">“Miglior smash burger della città”</p>
+          <footer class="review__meta">
+            <span class="review__author">Vincenzo Russo <span class="review__badge">Local Guide</span></span>
+            <span class="review__date">6 mesi fa</span>
+          </footer>
+        </article>
+
+        <article class="review">
+          <p class="review__text">“Panini spettacolari, pieni di sapore e preparati con cura. Ambiente super accogliente e staff fantastico, ti fanno sentire a casa.”</p>
+          <footer class="review__meta">
+            <span class="review__author">Rosa Cavaliere</span>
+            <span class="review__date">7 mesi fa</span>
+          </footer>
+        </article>
+
+        <article class="review">
+          <p class="review__text">“Hamburger delizioso e panino morbidissimo. Lo staff solare e accogliente: da consigliare per qualsiasi fascia d'età.”</p>
+          <footer class="review__meta">
+            <span class="review__author">Martin D'Antonio</span>
+            <span class="review__date">7 mesi fa</span>
+          </footer>
+        </article>
+
+        <article class="review">
+          <p class="review__text">“Panini oltremodo buoni. Personale qualificato e gentilissimi. Consiglio il veggy ma lo smash punny è un'altra dimensione di piacere.”</p>
+          <footer class="review__meta">
+            <span class="review__author">Simona Squillante</span>
+            <span class="review__date">4 mesi fa</span>
+          </footer>
+        </article>
+
+        <article class="review">
+          <p class="review__text">“Ottimo panino! Unico nel suo genere! Atmosfera eccezionale!”</p>
+          <footer class="review__meta">
+            <span class="review__author">Giovanna</span>
+            <span class="review__date">7 mesi fa</span>
+          </footer>
+        </article>
+
+        <article class="review">
+          <p class="review__text">“Ho ordinato delivery, quindi non so come sia mangiare lì. Ma gli smash sono buoni e il bacon è ottimo.”</p>
+          <footer class="review__meta">
+            <span class="review__author">Marcella Mercurio <span class="review__badge">Local Guide</span></span>
+            <span class="review__date">1 settimana fa</span>
+          </footer>
+        </article>
       </div>
-      <button class="add-btn" id="addCustom">Aggiungi all'ordine</button>
+
+      <p class="reviews__cta">
+        <a class="btn btn--outline" href="https://maps.app.goo.gl/rdHRGT6etQbTMYX26" target="_blank" rel="noopener">Leggi tutte le recensioni</a>
+      </p>
     </div>
-  </div>
+  </section>
 
-  <h2 class="section-title">Fritti <em>// sides</em></h2>
-  <div class="card-block" id="sides"></div>
+  <section class="section section--alt" id="dove">
+    <div class="wrap">
+      <header class="section__head">
+        <p class="eyebrow">Orari e contatti</p>
+        <h2>Vieni a Corso Umberto I 34</h2>
+      </header>
 
-  <h2 class="section-title">Salse <em>// dip pot 0,50 €</em></h2>
-  <div class="card-block">
-    <div class="hint" style="padding:8px 0;font-size:12px;color:var(--ink-soft)">Tocca per aggiungere · tieni premuto per togliere</div>
-    <div class="sauces-grid" id="sauces"></div>
-  </div>
+      <div class="dove">
+        <div class="dove__col">
+          <h3 class="mini-title">Orari di apertura</h3>
+          <table class="hours" id="hours">
+            <caption class="visually-hidden">Orari settimanali di Punny Smash</caption>
+            <tbody>
+              <tr data-day="1"><th scope="row">Lunedì</th><td>19:00 – 02:00</td></tr>
+              <tr data-day="2"><th scope="row">Martedì</th><td>19:00 – 02:00</td></tr>
+              <tr data-day="3"><th scope="row">Mercoledì</th><td>19:00 – 02:00</td></tr>
+              <tr data-day="4"><th scope="row">Giovedì</th><td>19:00 – 02:00</td></tr>
+              <tr data-day="5"><th scope="row">Venerdì</th><td>19:00 – 05:00</td></tr>
+              <tr data-day="6"><th scope="row">Sabato</th><td>19:00 – 05:00</td></tr>
+              <tr data-day="0"><th scope="row">Domenica</th><td>19:00 – 02:00</td></tr>
+            </tbody>
+          </table>
 
-  <h2 class="section-title">Bibite <em>// drinks</em></h2>
-  <div class="card-block" id="drinks"></div>
+          <address class="contact">
+            <p>
+              <strong>Punny Smash</strong><br>
+              Corso Umberto I, 34<br>
+              84013 Cava de' Tirreni (SA)
+            </p>
+            <p>
+              <a href="tel:+393520164365">352 016 4365</a>
+            </p>
+            <p class="contact__meta">Fast food · hamburgeria</p>
+          </address>
 
-  <!-- Milkshake configurator -->
-  <div class="composer" style="margin-top:14px">
-    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">
-      <div class="row-photo" style="width:64px;height:64px;border-radius:12px"><img src="img/punnymilkshake.jpeg" alt="Punny Milkshake" onerror="this.parentNode.innerHTML='<div class=ph-placeholder>Punny Milkshake</div>'"></div>
-      <div style="flex:1;min-width:0">
-        <h3 style="margin:0">Punny Milkshake</h3>
-        <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Milkshake artigianale, scegli base e topping.</div>
+          <ul class="chips chips--soft">
+            <li>Consumazione sul posto</li>
+            <li>Asporto</li>
+            <li>Consegna a domicilio</li>
+            <li>Ordine online</li>
+            <li>Carte di credito</li>
+            <li>Carte di debito</li>
+            <li>Pagamenti NFC</li>
+            <li>Adatto ai bambini</li>
+          </ul>
+
+          <div class="dove__actions">
+            <a class="btn btn--solid" href="tel:+393520164365">Chiama il locale</a>
+            <a class="btn btn--outline" href="https://www.google.com/maps/dir/?api=1&amp;destination=Punny+Smash%2C+Corso+Umberto+I+34%2C+84013+Cava+de%27+Tirreni+SA" target="_blank" rel="noopener">Indicazioni stradali</a>
+          </div>
+        </div>
+
+        <div class="dove__map" data-map>
+          <div class="mapfacade">
+            <svg class="mapfacade__pin" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5"/>
+            </svg>
+            <p class="mapfacade__title">Corso Umberto I, 34</p>
+            <p class="mapfacade__note">Sotto i portici, a due passi dal centro di Cava de' Tirreni. La mappa si carica appena la raggiungi.</p>
+            <button class="btn btn--solid" type="button" data-map-load>Mostra la mappa</button>
+            <a class="mapfacade__link" href="https://maps.app.goo.gl/rdHRGT6etQbTMYX26" target="_blank" rel="noopener">Apri in Google Maps</a>
+          </div>
+          <span class="dove__maptag" aria-hidden="true">Punny Smash</span>
+        </div>
       </div>
     </div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:10px 0 6px;letter-spacing:.5px">Base</div>
-    <div class="ingredients" id="milkshakeBase"></div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Topping <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none">(opzionali)</span></div>
-    <div class="ingredients" id="milkshakeToppings"></div>
-    <div class="composer-foot">
-      <div class="price">
-        <small>Totale milkshake</small>
-        <span id="milkshakePrice">3,00 €</span>
-      </div>
-      <button class="add-btn" id="addMilkshake">Aggiungi all'ordine</button>
-    </div>
-  </div>
-
-  <h2 class="section-title">Dolci <em>// desserts</em></h2>
-
-  <!-- Punny Biscuit (simple row) -->
-  <div class="card-block" id="biscuitRow" style="margin-bottom:14px"></div>
-
-  <!-- Pattyciok configurator -->
-  <div class="composer">
-    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">
-      <div class="row-photo" style="width:64px;height:64px;border-radius:12px"><img id="pattyciokPhoto" src="img/punnypattycioknutella.jpg" alt="Punny Pattyciok" onerror="this.parentNode.innerHTML='<div class=ph-placeholder>Punny Pattyciok</div>'"></div>
-      <div style="flex:1;min-width:0">
-        <h3 style="margin:0">Punny Pattyciok</h3>
-        <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Potato bun farcito, scegli farcitura e gusto.</div>
-      </div>
-    </div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:10px 0 6px;letter-spacing:.5px">Farcitura</div>
-    <div class="ingredients" id="pattyciokFilling"></div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Gusto <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none;letter-spacing:0">(uno o più)</span></div>
-    <div class="ingredients" id="pattyciokFlavour"></div>
-    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Topping <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none">(opzionali)</span></div>
-    <div class="ingredients" id="pattyciokToppings"></div>
-    <div class="composer-foot">
-      <div class="price">
-        <small>Totale pattyciok</small>
-        <span id="pattyciokPrice">3,00 €</span>
-      </div>
-      <button class="add-btn" id="addPattyciok">Aggiungi all'ordine</button>
-    </div>
-  </div>
-
-  <h2 class="section-title">Modalità <em>// ritiro</em></h2>
-  <div class="toggle-row" id="modeToggle">
-    <button data-mode="consegna" class="on"><span class="icon">🛵</span>Consegna</button>
-    <button data-mode="ritiro"><span class="icon">🥡</span>Ritiro</button>
-  </div>
-
-  <div id="addressWrap" style="margin-top:10px">
-    <div class="note-box required" id="addressBox">
-      <label>Indirizzo di consegna</label>
-      <input id="address" placeholder="Via, civico, città (es. Via Roma 12, Cava de' Tirreni)" autocomplete="street-address" />
-      <div class="field-warn" id="addressWarn">⚠ Inserisci l'indirizzo per finalizzare l'ordine</div>
-    </div>
-    <div class="note-box" id="riderBox" style="margin-top:10px">
-      <label>Note per il rider <span style="font-weight:400;color:var(--ink-soft);font-size:11px;letter-spacing:.3px">(opzionale)</span></label>
-      <textarea id="riderNote" rows="2" placeholder="es. piano 3, citofono Rossi, scala B"></textarea>
-    </div>
-  </div>
-
-  <h2 class="section-title">Orario <em>// quando</em></h2>
-  <div class="toggle-row" id="timeToggle">
-    <button data-time="adesso" class="on"><span class="icon">⚡</span>Adesso</button>
-    <button data-time="dopo"><span class="icon">🕒</span>Dopo</button>
-  </div>
-  <div id="timeWrap" style="display:none;margin-top:10px">
-    <div class="note-box required" id="timeBox">
-      <label>Orario richiesto</label>
-      <input id="timeWhen" type="time" />
-      <div class="field-warn" id="timeWarn">⚠ Inserisci l'orario per finalizzare l'ordine</div>
-    </div>
-  </div>
-
-  <h2 class="section-title">Pagamento <em>// metodo</em></h2>
-  <div class="toggle-row" id="payToggle">
-    <button data-pay="contanti" class="on"><span class="icon">💶</span>Contanti</button>
-    <button data-pay="carta"><span class="icon">💳</span>Carta</button>
-  </div>
-  <div class="pay-hint" id="payHint">Il locale porterà il POS al momento della consegna.</div>
-  <div id="changeWrap" style="margin-top:10px">
-    <div class="note-box">
-      <label>Serve resto? <span style="font-weight:400;color:var(--ink-soft);font-size:11px;letter-spacing:.3px">(opzionale)</span></label>
-      <textarea id="changeNote" rows="2" placeholder="es. pago con 50€, serve resto da 20€"></textarea>
-    </div>
-  </div>
-
-  <h2 class="section-title">Note <em>// opzionali</em></h2>
-  <div class="note-box">
-    <label>Aggiungi una nota (allergie, cottura, ecc.)</label>
-    <textarea id="note" rows="2" placeholder="es. il cheeseburger senza cipolla, grazie"></textarea>
-  </div>
-
-  <h2 class="section-title">Il tuo ordine <em>// riepilogo</em></h2>
-  <div class="card-block">
-    <div class="cart-list" id="cartList">
-      <div class="empty">Nessun articolo selezionato</div>
-    </div>
-  </div>
+  </section>
 
 </main>
 
-<div class="checkout-bar">
-  <div class="checkout-total">
-    <small>Totale</small>
-    <b id="grandTotal">0,00 €</b>
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div class="foot__brand">
+      <picture>
+        <source srcset="assets/img/logo-lockup.webp" type="image/webp">
+        <img src="assets/img/logo-lockup-460.png" alt="Punny Smash" width="180" height="203" loading="lazy" decoding="async">
+      </picture>
+    </div>
+    <div class="foot__col">
+      <h2>Dove</h2>
+      <p>Corso Umberto I, 34<br>84013 Cava de' Tirreni (SA)</p>
+    </div>
+    <div class="foot__col">
+      <h2>Contatti</h2>
+      <p><a href="tel:+393520164365">352 016 4365</a><br>
+      <a href="ordina/">Ordina online</a><br>
+      <a href="https://maps.app.goo.gl/rdHRGT6etQbTMYX26" target="_blank" rel="noopener">Scheda Google</a></p>
+    </div>
+    <div class="foot__col">
+      <h2>Orari</h2>
+      <p>Lun–Gio e Dom 19:00–02:00<br>Ven–Sab 19:00–05:00</p>
+    </div>
   </div>
-  <a href="#" class="wa-btn" id="waBtn" aria-disabled="true">
-    <svg viewBox="0 0 32 32"><path d="M16 .5C7.4.5.5 7.4.5 16c0 2.8.7 5.5 2.1 7.9L.5 31.5l7.8-2c2.3 1.3 4.9 1.9 7.7 1.9 8.6 0 15.5-6.9 15.5-15.5S24.6.5 16 .5zm0 28.3c-2.5 0-4.9-.7-7-2l-.5-.3-4.6 1.2 1.2-4.5-.3-.5c-1.4-2.2-2.1-4.7-2.1-7.2 0-7.2 5.9-13.1 13.1-13.1 7.2 0 13.1 5.9 13.1 13.1 0 7.3-5.9 13.3-13.2 13.3zm7.2-9.9c-.4-.2-2.3-1.1-2.7-1.3-.4-.1-.6-.2-.9.2-.3.4-1 1.3-1.3 1.6-.2.3-.5.3-.9.1-.4-.2-1.7-.6-3.2-2-1.2-1-1.9-2.3-2.2-2.7-.2-.4 0-.6.2-.8.2-.2.4-.5.6-.7.2-.2.3-.4.4-.7.1-.3.1-.5 0-.7-.1-.2-.9-2.2-1.3-3-.3-.8-.7-.7-.9-.7h-.8c-.3 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.2 0 1.9 1.4 3.7 1.6 4 .2.3 2.7 4.1 6.5 5.8.9.4 1.6.6 2.2.8.9.3 1.7.2 2.4.1.7-.1 2.3-.9 2.7-1.9.3-.9.3-1.7.2-1.9-.1-.2-.4-.3-.8-.5z"/></svg>
-    Ordina su WhatsApp
-  </a>
+  <div class="wrap foot__bottom">
+    <p>© <span data-year>2026</span> Punny Smash · Cava de' Tirreni</p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button type="button" class="lightbox__close" aria-label="Chiudi la foto">&times;</button>
+  <img alt="" id="lightboxImg">
 </div>
 
-<footer>Punny Smash · ordini via WhatsApp</footer>
-
-<script>
-/* ============== CONFIG ============== */
-const CONFIG = {
-  phone: "393520164365",     // numero WhatsApp del locale (formato internazionale, senza + né 00)
-  shopName: "Punny Smash",
-  currency: "€"
-};
-
-/* ============== MENU ============== */
-const DELIVERY_FEE = 2.50;
-/* In "photo" inserisci il path al file immagine.
-   Se il file non esiste, viene mostrato un placeholder a strisce. */
-const BURGERS = [
-  { id:"cheese",   name:"Cheeseburger",        price:8.00, photo:"img/cheesburger.jpeg",        desc:"Cheddar, carne x2, salsa smash" },
-  { id:"bacon",    name:"Cheeseburger Bacon",  price:8.50, photo:"img/cheesburgerbacon.jpeg",   desc:"Cheddar, carne x2, salsa smash, bacon" },
-  { id:"punny",    name:"Punny Smash",         price:9.00, photo:"img/punnysmash.jpg",          desc:"Cheddar, carne x2, salsa smash, bacon, cetriolini pickled, cipolla caramellata" },
-  { id:"italian",  name:"Italian Smash",       price:8.50, photo:"img/italiansmash.jpeg",       desc:"Provola, salsa parmigiano, lattuga, pomodoro, carne x2" },
-  { id:"spicy",    name:"Spicy Smash",         price:8.50, photo:"img/spicysmash.jpeg",         desc:"Salsa piccante hot, lattuga, pomodoro, carne x2, cheddar" },
-  { id:"veggie",   name:"Punny Veggie",        price:8.50, photo:"img/punnyveggie.jpeg",        desc:"Uovo fried, salsa parmigiano, provola smoked, cipolle caramellate, cetriolini pickled, lattuga, pomodoro, cipolle crunchy fried" },
-  { id:"chicken",  name:"Punny Chicken",       price:8.50, photo:"img/punnychicken.jpeg",       desc:"Pollo fritto croccante succoso, bacon, lattuga, pomodoro, mayo soia teriyaki" },
-];
-
-const CUSTOM_BASE = 3.00;
-const INGREDIENTS = [
-  { id:"carne",     name:"Carne x2 Patty Smashed Beef/Pork", price:4.00 },
-  { id:"pollo",     name:"Pollo Crunchy Fried",              price:4.00 },
-  { id:"bacon",     name:"Bacon",                            price:1.00 },
-  { id:"pickled",   name:"Cetriolini Pickled",               price:0.50 },
-  { id:"cheddar",   name:"Cheddar Fette",                    price:0.50 },
-  { id:"cipolla",   name:"Cipolla Caramellata",              price:0.50 },
-  { id:"lattuga",   name:"Lattuga",                          price:0.50 },
-  { id:"pomodoro",  name:"Pomodoro Fette",                   price:0.50 },
-  { id:"parmi",     name:"Salsa Parmigiano",                 price:0.50 },
-  { id:"provola",   name:"Provola Smoked",                   price:0.50 },
-  { id:"uovo",      name:"Uovo Fried",                       price:0.50 },
-  { id:"ketchup",   name:"Ketchup",                          price:0.50 },
-  { id:"mayo",      name:"Maionese",                         price:0.50 },
-  { id:"sCheddar",  name:"Salsa Cheddar",                    price:0.50 },
-  { id:"hot",       name:"Salsa Piccante Hot",               price:0.50 },
-  { id:"smash",     name:"Salsa Smash",                      price:0.50 },
-  { id:"patClass",  name:"Patatine Classic Gialle Fried",    price:0.50 },
-  { id:"patDolci",  name:"Patate Arancioni Dolci Fried",     price:0.50 },
-  { id:"teriyaki",  name:"Mayo Soia Teriyaki",               price:0.50 },
-  { id:"cipCrunch", name:"Cipolla Crunchy Fried",            price:0.50 },
-  { id:"bbq",       name:"Salsa BBQ",                        price:0.50 },
-  { id:"caesar",    name:"Salsa Caesar",                     price:0.50 },
-  { id:"curry",     name:"Salsa Curry & Mango",              price:0.50 },
-  { id:"senape",    name:"Salsa Senape & Miele",             price:0.50 },
-  { id:"sweet",     name:"Salsa Sweet & Sour",               price:0.50 },
-];
-
-const SIDES = [
-  { id:"sweet",   name:"Patate dolci",          subtitle:"Sweet potatoes", price:3.50, photo:"img/patatinedolci.jpeg" },
-  { id:"classic", name:"Patate classic stick",  subtitle:"",               price:3.00, photo:"img/patatinegialle.jpeg" },
-  { id:"nuggets", name:"Chicken Nuggets",       subtitle:"",               price:4.50, photo:"img/chickennuggets.jpeg" },
-];
-
-const SAUCES = [
-  "Maionese","Ketchup","Salsa Cesar","Curry & Mango","Senape e miele",
-  "Sweet & Sour","BBQ","Salsa piccante hot","Salsa smash","Salsa cheddar","Mayo soia teriyaki"
-];
-const SAUCE_PRICE = 0.50;
-
-const DRINKS = [
-  { id:"coke",   name:"Coca Cola vetro",       price:2.50, photo:"img/coca-cola.jpg" },
-  { id:"cokez",  name:"Coca Cola Zero vetro",  price:2.50, photo:"img/coca-cola-zero.jpg" },
-  { id:"acqua",  name:"Acqua liscia",          price:1.00, photo:"img/acqua-liscia.jpg" },
-  { id:"acquaf", name:"Acqua frizzante",       price:1.00, photo:"img/acqua-frizzante.jpg" },
-  { id:"birra5", name:"Birra vetro 5°",        price:3.00, photo:"img/birra-5.jpg" },
-  { id:"birra8", name:"Birra vetro 8°",        price:3.50, photo:"img/birra-8.jpg" },
-];
-
-/* Punny Pattyciok: base price 3€, you pick filling type + flavour, plus optional toppings */
-const PATTYCIOK = {
-  id:"pattyciok",
-  name:"Punny Pattyciok",
-  basePrice: 3.00,
-  photo:"img/punnypattycioknutella.jpg",  // default shown when no flavour selected
-  desc:"Potato bun farcito con disco fresco o crema spalmabile al cioccolato",
-  fillings: [
-    { id:"disco",  name:"Disco fresco",      price:1.00 },
-    { id:"crema",  name:"Crema spalmabile",  price:0.50 },
-  ],
-  flavours: [
-    { id:"nutella",  name:"Nutella",             photo:"img/punnypattycioknutella.jpg" },
-    { id:"fondente", name:"Cioccolato Fondente", photo:"img/punnypattyciokfondente.jpeg" },
-    { id:"bianco",   name:"Cioccolato Bianco",   photo:"img/punnypattyciokbianco.jpeg" },
-  ],
-  toppings: [
-    { id:"nocciole",  name:"Granella di Nocciole",    price:0.50 },
-    { id:"panna",     name:"Panna Montata",           price:0.50 },
-    { id:"cialda",    name:"Cialda Biscotto Croccante", price:0.50 },
-    { id:"scaglie",   name:"Scaglie di Cioccolato",   price:0.50 },
-    { id:"frutti",    name:"Frutti Rossi",            price:1.00 },
-    { id:"maldon",    name:"Cristalli di sale Maldon", price:0.50 },
-  ],
-};
-
-/* Punny Biscuit: single fixed item */
-const PUNNY_BISCUIT = {
-  id:"biscuit",
-  name:"Punny Biscuit",
-  price:3.00,
-  photo:"img/punnybiscuit.jpeg",
-  desc:"Biscotto ricoperto di cioccolato",
-};
-
-/* Punny Milkshake */
-const MILKSHAKE = {
-  id:"milkshake",
-  name:"Punny Milkshake",
-  photo:"img/punnymilkshake.jpeg",
-  desc:"Milkshake artigianale",
-  bases: [
-    { id:"fiordilatte",  name:"Fiordilatte",                 price:3.00 },
-    { id:"fiordi-cioc",  name:"Fiordilatte e Cioccolato",    price:3.50 },
-  ],
-  toppings: [
-    { id:"panna",     name:"Panna Montata",            price:0.50 },
-    { id:"scaglie",   name:"Scaglie di Cioccolato",    price:0.50 },
-    { id:"maldon",    name:"Cristalli di sale Maldon", price:0.50 },
-    { id:"frutti",    name:"Frutti Rossi",             price:1.00 },
-    { id:"cialda",    name:"Cialda Biscotto Croccante", price:0.50 },
-    { id:"nocciole",  name:"Granella di Nocciole",     price:0.50 },
-  ],
-};
-
-/* ============== STATE ============== */
-const state = {
-  burgers: {}, custom: [], customSelection: new Set(),
-  sides: {}, sauces: {}, drinks: {},
-  biscuit: 0,
-  pattyciok: [],     // array of configured items: {filling, flavour, toppings:[], price}
-  milkshakes: [],    // array of configured items: {base, toppings:[], price}
-  mode: "consegna", address: "", riderNote: "",
-  timing: "adesso", timeWhen: "",
-  payment: "contanti", changeNote: "",
-  note: "",
-};
-
-/* ============== UTILS ============== */
-const fmt = n => n.toFixed(2).replace(".",",") + " " + CONFIG.currency;
-const $ = sel => document.querySelector(sel);
-const el = (tag, attrs={}, ...children) => {
-  const e = document.createElement(tag);
-  for (const k in attrs){
-    if (k === "class") e.className = attrs[k];
-    else if (k.startsWith("on")) e.addEventListener(k.slice(2), attrs[k]);
-    else e.setAttribute(k, attrs[k]);
-  }
-  for (const c of children){
-    if (c == null) continue;
-    e.append(c.nodeType ? c : document.createTextNode(c));
-  }
-  return e;
-};
-
-function makePhotoEl(src, alt, klass){
-  const wrap = el("div", {class:klass});
-  if (src) {
-    const img = el("img", {src:src, alt:alt});
-    img.addEventListener("error", () => {
-      wrap.innerHTML = `<div class="ph-placeholder">${alt}</div>`;
-    });
-    wrap.append(img);
-  } else {
-    wrap.innerHTML = `<div class="ph-placeholder">${alt}</div>`;
-  }
-  return wrap;
-}
-
-/* ============== BURGERS ============== */
-function renderBurgers(){
-  const c = $("#burgers"); c.innerHTML = "";
-  BURGERS.forEach(b => {
-    const qty = state.burgers[b.id] || 0;
-    const card = el("div", {class:"burger" + (qty>0?" selected":"")});
-    card.append(
-      makePhotoEl(b.photo, b.name, "burger-photo"),
-      el("div", {class:"burger-body"},
-        el("div", {class:"burger-head"},
-          el("h3", {class:"burger-name"}, b.name),
-          el("div", {class:"burger-price"}, fmt(b.price))
-        ),
-        el("div", {class:"burger-desc"}, b.desc),
-        el("div", {class:"burger-controls"},
-          el("div", {class:"qty"},
-            el("button", {onclick:()=>changeBurger(b.id,-1)}, "−"),
-            el("span", {}, String(qty)),
-            el("button", {onclick:()=>changeBurger(b.id,+1)}, "+"),
-          ),
-          el("button", {class:"add-btn", onclick:()=>changeBurger(b.id,+1)}, qty>0?"+ ancora":"Aggiungi")
-        )
-      )
-    );
-    c.append(card);
-  });
-}
-function changeBurger(id, delta){
-  state.burgers[id] = Math.max(0, (state.burgers[id]||0) + delta);
-  renderBurgers(); renderCart();
-}
-
-/* ============== CUSTOM ============== */
-function renderIngredients(){
-  const c = $("#ingredients"); c.innerHTML = "";
-  INGREDIENTS.forEach(i => {
-    const on = state.customSelection.has(i.id);
-    const chip = el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{
-        if (on) state.customSelection.delete(i.id); else state.customSelection.add(i.id);
-        renderIngredients(); updateCustomPrice();
-      }
-    },
-      i.name,
-      el("span",{class:"x"},"+"+i.price.toFixed(2).replace(".",",")+CONFIG.currency)
-    );
-    c.append(chip);
-  });
-}
-function customCurrentPrice(){
-  let p = CUSTOM_BASE;
-  state.customSelection.forEach(id => {
-    const ing = INGREDIENTS.find(x=>x.id===id);
-    if (ing) p += ing.price;
-  });
-  return p;
-}
-function updateCustomPrice(){ $("#customPrice").textContent = fmt(customCurrentPrice()); }
-
-$("#addCustom").addEventListener("click", () => {
-  if (state.customSelection.size === 0){
-    if (!confirm("Vuoi aggiungere un burger base senza extra?")) return;
-  }
-  const items = [...state.customSelection].map(id => INGREDIENTS.find(x=>x.id===id));
-  state.custom.push({ ingredients: items, price: customCurrentPrice() });
-  state.customSelection.clear();
-  renderIngredients(); updateCustomPrice(); renderCart();
-});
-
-/* ============== BISCUIT (simple +/-) ============== */
-function renderBiscuit(){
-  const c = $("#biscuitRow"); c.innerHTML = "";
-  const qty = state.biscuit;
-  const row = el("div", {class:"row-item"},
-    el("div", {class:"row-main"},
-      makePhotoEl(PUNNY_BISCUIT.photo, PUNNY_BISCUIT.name, "row-photo"),
-      el("div", {class:"row-name"}, PUNNY_BISCUIT.name,
-        el("small", {}, PUNNY_BISCUIT.desc)
-      )
-    ),
-    el("div", {class:"row-right"},
-      el("span", {class:"row-price"}, fmt(PUNNY_BISCUIT.price)),
-      el("div", {class:"qty"},
-        el("button", {onclick:()=>{ state.biscuit = Math.max(0, state.biscuit-1); renderBiscuit(); renderCart(); }}, "−"),
-        el("span", {}, String(qty)),
-        el("button", {onclick:()=>{ state.biscuit += 1; renderBiscuit(); renderCart(); }}, "+"),
-      )
-    )
-  );
-  c.append(row);
-}
-
-/* ============== PATTYCIOK CONFIGURATOR ============== */
-const pattyciokSel = { filling:null, flavours:new Set(), toppings:new Set() };
-
-function pattyciokCurrentPrice(){
-  let p = PATTYCIOK.basePrice;
-  if (pattyciokSel.filling){
-    const f = PATTYCIOK.fillings.find(x=>x.id===pattyciokSel.filling);
-    if (f) p += f.price;
-  }
-  pattyciokSel.toppings.forEach(id => {
-    const t = PATTYCIOK.toppings.find(x=>x.id===id);
-    if (t) p += t.price;
-  });
-  return p;
-}
-function updatePattyciokPrice(){ $("#pattyciokPrice").textContent = fmt(pattyciokCurrentPrice()); }
-
-function renderPattyciok(){
-  // Fillings (single-select)
-  const fc = $("#pattyciokFilling"); fc.innerHTML = "";
-  PATTYCIOK.fillings.forEach(f => {
-    const on = pattyciokSel.filling === f.id;
-    fc.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{ pattyciokSel.filling = on ? null : f.id; renderPattyciok(); updatePattyciokPrice(); }
-    }, f.name, el("span",{class:"x"},"+"+f.price.toFixed(2).replace(".",",")+CONFIG.currency)));
-  });
-
-  // Flavours (multi-select, up to 3)
-  const fl = $("#pattyciokFlavour"); fl.innerHTML = "";
-  PATTYCIOK.flavours.forEach(f => {
-    const on = pattyciokSel.flavours.has(f.id);
-    fl.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{
-        if (on) pattyciokSel.flavours.delete(f.id);
-        else pattyciokSel.flavours.add(f.id);
-        renderPattyciok();
-      }
-    }, f.name));
-  });
-
-  // Update preview photo based on selected flavours:
-  //  - 0 selected → default (Nutella)
-  //  - 1 selected → that flavour's photo
-  //  - 2 or 3 selected → Nutella (default)
-  const photoEl = $("#pattyciokPhoto");
-  if (photoEl){
-    let newSrc = PATTYCIOK.photo; // default = Nutella, also used when 2+ are selected
-    if (pattyciokSel.flavours.size === 1){
-      const id = [...pattyciokSel.flavours][0];
-      const sel = PATTYCIOK.flavours.find(x=>x.id===id);
-      if (sel && sel.photo) newSrc = sel.photo;
-    }
-    if (photoEl.getAttribute("src") !== newSrc){
-      photoEl.setAttribute("src", newSrc);
-    }
-  }
-
-  // Toppings (multi-select)
-  const tc = $("#pattyciokToppings"); tc.innerHTML = "";
-  PATTYCIOK.toppings.forEach(t => {
-    const on = pattyciokSel.toppings.has(t.id);
-    tc.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{
-        if (on) pattyciokSel.toppings.delete(t.id); else pattyciokSel.toppings.add(t.id);
-        renderPattyciok(); updatePattyciokPrice();
-      }
-    }, t.name, el("span",{class:"x"},"+"+t.price.toFixed(2).replace(".",",")+CONFIG.currency)));
-  });
-}
-
-$("#addPattyciok").addEventListener("click", () => {
-  if (!pattyciokSel.filling){ alert("Scegli la farcitura (Disco fresco o Crema spalmabile)"); return; }
-  if (pattyciokSel.flavours.size === 0){ alert("Scegli almeno un gusto"); return; }
-  const filling = PATTYCIOK.fillings.find(x=>x.id===pattyciokSel.filling);
-  const flavours = [...pattyciokSel.flavours].map(id => PATTYCIOK.flavours.find(x=>x.id===id));
-  const toppings = [...pattyciokSel.toppings].map(id => PATTYCIOK.toppings.find(x=>x.id===id));
-  state.pattyciok.push({
-    filling, flavours, toppings, price: pattyciokCurrentPrice()
-  });
-  pattyciokSel.filling = null;
-  pattyciokSel.flavours.clear();
-  pattyciokSel.toppings.clear();
-  renderPattyciok(); updatePattyciokPrice(); renderCart();
-});
-
-/* ============== MILKSHAKE CONFIGURATOR ============== */
-const milkshakeSel = { base:null, toppings:new Set() };
-
-function milkshakeCurrentPrice(){
-  let p = 0;
-  if (milkshakeSel.base){
-    const b = MILKSHAKE.bases.find(x=>x.id===milkshakeSel.base);
-    if (b) p += b.price;
-  }
-  milkshakeSel.toppings.forEach(id => {
-    const t = MILKSHAKE.toppings.find(x=>x.id===id);
-    if (t) p += t.price;
-  });
-  return p;
-}
-function updateMilkshakePrice(){
-  const p = milkshakeCurrentPrice();
-  $("#milkshakePrice").textContent = p > 0 ? fmt(p) : "—";
-}
-
-function renderMilkshake(){
-  // Bases (single-select, required, replaces base price)
-  const bc = $("#milkshakeBase"); bc.innerHTML = "";
-  MILKSHAKE.bases.forEach(b => {
-    const on = milkshakeSel.base === b.id;
-    bc.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{ milkshakeSel.base = on ? null : b.id; renderMilkshake(); updateMilkshakePrice(); }
-    }, b.name, el("span",{class:"x"}, b.price.toFixed(2).replace(".",",")+CONFIG.currency)));
-  });
-  // Toppings (multi-select)
-  const tc = $("#milkshakeToppings"); tc.innerHTML = "";
-  MILKSHAKE.toppings.forEach(t => {
-    const on = milkshakeSel.toppings.has(t.id);
-    tc.append(el("div", {
-      class:"chip"+(on?" on":""),
-      onclick:()=>{
-        if (on) milkshakeSel.toppings.delete(t.id); else milkshakeSel.toppings.add(t.id);
-        renderMilkshake(); updateMilkshakePrice();
-      }
-    }, t.name, el("span",{class:"x"},"+"+t.price.toFixed(2).replace(".",",")+CONFIG.currency)));
-  });
-}
-
-$("#addMilkshake").addEventListener("click", () => {
-  if (!milkshakeSel.base){ alert("Scegli la base del milkshake"); return; }
-  const base = MILKSHAKE.bases.find(x=>x.id===milkshakeSel.base);
-  const toppings = [...milkshakeSel.toppings].map(id => MILKSHAKE.toppings.find(x=>x.id===id));
-  state.milkshakes.push({
-    base, toppings, price: milkshakeCurrentPrice()
-  });
-  milkshakeSel.base = null;
-  milkshakeSel.toppings.clear();
-  renderMilkshake(); updateMilkshakePrice(); renderCart();
-});
-
-/* ============== SIDES / DRINKS ============== */
-function renderRowList(containerId, list, stateMap){
-  const c = $(containerId); c.innerHTML = "";
-  list.forEach(item => {
-    const qty = stateMap[item.id] || 0;
-    const row = el("div", {class:"row-item"},
-      el("div", {class:"row-main"},
-        makePhotoEl(item.photo, item.name, "row-photo"),
-        el("div", {class:"row-name"}, item.name,
-          item.subtitle ? el("small", {}, item.subtitle) : null
-        )
-      ),
-      el("div", {class:"row-right"},
-        el("span", {class:"row-price"}, fmt(item.price)),
-        el("div", {class:"qty"},
-          el("button", {onclick:()=>{ stateMap[item.id] = Math.max(0,(stateMap[item.id]||0)-1); renderRowList(containerId,list,stateMap); renderCart(); }}, "−"),
-          el("span", {}, String(qty)),
-          el("button", {onclick:()=>{ stateMap[item.id] = (stateMap[item.id]||0)+1; renderRowList(containerId,list,stateMap); renderCart(); }}, "+"),
-        )
-      )
-    );
-    c.append(row);
-  });
-}
-
-/* ============== SAUCES ============== */
-function renderSauces(){
-  const c = $("#sauces"); c.innerHTML = "";
-  SAUCES.forEach(name => {
-    const qty = state.sauces[name] || 0;
-    const chip = el("div", {
-      class:"chip"+(qty>0?" on":""),
-      onclick:()=>{
-        state.sauces[name] = (state.sauces[name]||0) + 1;
-        renderSauces(); renderCart();
-      },
-      oncontextmenu:(e)=>{ e.preventDefault(); state.sauces[name] = Math.max(0,(state.sauces[name]||0)-1); renderSauces(); renderCart(); }
-    },
-      name + (qty>0 ? ` ×${qty}` : ""),
-      el("span",{class:"x"}, SAUCE_PRICE.toFixed(2).replace(".",",")+CONFIG.currency)
-    );
-    let pressTimer;
-    chip.addEventListener("touchstart", () => {
-      pressTimer = setTimeout(()=>{
-        state.sauces[name] = Math.max(0,(state.sauces[name]||0)-1);
-        renderSauces(); renderCart();
-      }, 500);
-    });
-    chip.addEventListener("touchend", () => clearTimeout(pressTimer));
-    chip.addEventListener("touchmove", () => clearTimeout(pressTimer));
-    c.append(chip);
-  });
-}
-
-/* ============== TOGGLES ============== */
-document.querySelectorAll("#modeToggle button").forEach(b => {
-  b.addEventListener("click", () => {
-    document.querySelectorAll("#modeToggle button").forEach(x=>x.classList.remove("on"));
-    b.classList.add("on");
-    state.mode = b.dataset.mode;
-    $("#addressWrap").style.display = state.mode === "consegna" ? "block" : "none";
-    // Clear error highlight when switching modes
-    $("#addressBox").classList.remove("error");
-    $("#addressWarn").classList.remove("show");
-    updatePayHint();
-    renderCart();
-  });
-});
-
-document.querySelectorAll("#payToggle button").forEach(b => {
-  b.addEventListener("click", () => {
-    document.querySelectorAll("#payToggle button").forEach(x=>{x.classList.remove("on");x.classList.remove("card");});
-    b.classList.add("on");
-    if (b.dataset.pay === "carta") b.classList.add("card");
-    state.payment = b.dataset.pay;
-    updatePayHint();
-    renderCart();
-  });
-});
-
-document.querySelectorAll("#timeToggle button").forEach(b => {
-  b.addEventListener("click", () => {
-    document.querySelectorAll("#timeToggle button").forEach(x=>x.classList.remove("on"));
-    b.classList.add("on");
-    state.timing = b.dataset.time;
-    $("#timeWrap").style.display = state.timing === "dopo" ? "block" : "none";
-    // Clear error when switching
-    $("#timeBox").classList.remove("error");
-    $("#timeWarn").classList.remove("show");
-    renderCart();
-  });
-});
-
-$("#timeWhen").addEventListener("input", e => {
-  state.timeWhen = e.target.value;
-  if (state.timeWhen){
-    $("#timeBox").classList.remove("error");
-    $("#timeWarn").classList.remove("show");
-  }
-  renderCart();
-});
-
-function updatePayHint(){
-  const hint = $("#payHint");
-  const changeWrap = $("#changeWrap");
-  if (state.payment === "carta"){
-    hint.classList.add("show");
-    hint.textContent = state.mode === "ritiro"
-      ? "POS disponibile in negozio al momento del ritiro."
-      : "Il rider porterà il POS alla consegna.";
-    changeWrap.style.display = "none";
-  } else {
-    hint.classList.remove("show");
-    changeWrap.style.display = "block";
-  }
-}
-
-$("#address").addEventListener("input", e => {
-  state.address = e.target.value.trim();
-  // Live-clear error state once user starts typing
-  if (state.address.length >= 5){
-    $("#addressBox").classList.remove("error");
-    $("#addressWarn").classList.remove("show");
-  }
-  renderCart();
-});
-$("#riderNote").addEventListener("input", e => { state.riderNote = e.target.value.trim(); renderCart(); });
-$("#changeNote").addEventListener("input", e => { state.changeNote = e.target.value.trim(); renderCart(); });
-$("#note").addEventListener("input", e => { state.note = e.target.value.trim(); renderCart(); });
-
-/* ============== CART ============== */
-function buildCartLines(){
-  const lines = [];
-  BURGERS.forEach(b => {
-    const q = state.burgers[b.id] || 0;
-    if (q>0) lines.push({ label:b.name, qty:q, unit:b.price, key:"burger:"+b.id });
-  });
-  state.custom.forEach((c,idx) => {
-    const ingNames = c.ingredients.map(i=>i.name).join(", ") || "base";
-    lines.push({ label:"Componilo tu", sub:ingNames, qty:1, unit:c.price, key:"custom:"+idx });
-  });
-  SIDES.forEach(s => {
-    const q = state.sides[s.id] || 0;
-    if (q>0) lines.push({ label:s.name, qty:q, unit:s.price, key:"side:"+s.id });
-  });
-  Object.entries(state.sauces).forEach(([name,q]) => {
-    if (q>0) lines.push({ label:"Salsa "+name, qty:q, unit:SAUCE_PRICE, key:"sauce:"+name });
-  });
-  DRINKS.forEach(d => {
-    const q = state.drinks[d.id] || 0;
-    if (q>0) lines.push({ label:d.name, qty:q, unit:d.price, key:"drink:"+d.id });
-  });
-  // Biscuit
-  if (state.biscuit > 0){
-    lines.push({ label:PUNNY_BISCUIT.name, qty:state.biscuit, unit:PUNNY_BISCUIT.price, key:"biscuit" });
-  }
-  // Pattyciok
-  state.pattyciok.forEach((p,idx) => {
-    const flavourNames = p.flavours.map(f=>f.name).join(" + ");
-    const parts = [p.filling.name, flavourNames];
-    if (p.toppings.length) parts.push(p.toppings.map(t=>t.name).join(", "));
-    lines.push({ label:PATTYCIOK.name, sub:parts.join(" · "), qty:1, unit:p.price, key:"pattyciok:"+idx });
-  });
-  // Milkshake
-  state.milkshakes.forEach((m,idx) => {
-    const sub = m.toppings.length ? `${m.base.name} + ${m.toppings.map(t=>t.name).join(", ")}` : m.base.name;
-    lines.push({ label:MILKSHAKE.name, sub, qty:1, unit:m.price, key:"milkshake:"+idx });
-  });
-  return lines;
-}
-
-function removeLine(key){
-  const [type, id] = key.split(":");
-  if (type === "burger") state.burgers[id] = 0;
-  else if (type === "custom") state.custom.splice(parseInt(id),1);
-  else if (type === "side") state.sides[id] = 0;
-  else if (type === "sauce") state.sauces[id] = 0;
-  else if (type === "drink") state.drinks[id] = 0;
-  else if (type === "biscuit") state.biscuit = 0;
-  else if (type === "pattyciok") state.pattyciok.splice(parseInt(id),1);
-  else if (type === "milkshake") state.milkshakes.splice(parseInt(id),1);
-  renderBurgers(); renderRowList("#sides",SIDES,state.sides); renderRowList("#drinks",DRINKS,state.drinks); renderSauces(); renderBiscuit(); renderCart();
-}
-
-function renderCart(){
-  const lines = buildCartLines();
-  const list = $("#cartList"); list.innerHTML = "";
-  let total = 0;
-  if (lines.length === 0){
-    list.append(el("div",{class:"empty"},"Nessun articolo selezionato"));
-  } else {
-    lines.forEach(l => {
-      const sub = l.unit * l.qty; total += sub;
-      list.append(el("div",{class:"cart-line"},
-        el("div",{class:"lname"}, `${l.qty}× ${l.label}`, l.sub ? el("small",{},l.sub) : null),
-        el("div",{class:"lprice"}, fmt(sub)),
-        el("button",{onclick:()=>removeLine(l.key)},"✕")
-      ));
-    });
-    // Delivery fee (consegna only)
-    if (state.mode === "consegna"){
-      total += DELIVERY_FEE;
-      list.append(el("div",{class:"cart-line delivery-line"},
-        el("div",{class:"lname"}, "Spese di consegna"),
-        el("div",{class:"lprice"}, fmt(DELIVERY_FEE)),
-      ));
-    }
-  }
-  $("#grandTotal").textContent = fmt(total);
-  const btn = $("#waBtn");
-
-  // Validation: cart non-empty + (if consegna) address provided + (if dopo) time provided
-  const needsAddress = state.mode === "consegna";
-  const addressOk = !needsAddress || state.address.length >= 5;
-  const needsTime = state.timing === "dopo";
-  const timeOk = !needsTime || (state.timeWhen && state.timeWhen.length >= 4);
-  const canOrder = total > 0 && addressOk && timeOk;
-
-  if (canOrder){
-    btn.setAttribute("aria-disabled","false");
-    btn.href = buildWaLink(lines,total);
-  } else {
-    btn.setAttribute("aria-disabled","true");
-    btn.href = "#";
-  }
-}
-
-/* ============== WHATSAPP MESSAGE ============== */
-function buildOrderMessage(lines,total){
-  const dt = new Date();
-  const stamp = dt.toLocaleString("it-IT",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});
-  let msg = `🍔 *Nuovo ordine — ${CONFIG.shopName}*\n`;
-  msg += `🕒 ${stamp}\n`;
-  if (state.mode === "ritiro"){
-    msg += `🥡 Ritiro in negozio\n`;
-  } else {
-    msg += `🛵 Consegna a domicilio\n`;
-    msg += `📍 ${state.address}\n`;
-    if (state.riderNote) msg += `🛎️ Rider: ${state.riderNote}\n`;
-  }
-  if (state.timing === "dopo" && state.timeWhen){
-    msg += `⏰ Per le ${state.timeWhen}\n`;
-  } else {
-    msg += `⚡ Subito\n`;
-  }
-  msg += `${state.payment === "carta" ? "💳" : "💶"} Pagamento: ${state.payment === "carta" ? "Carta (POS necessario)" : "Contanti"}\n`;
-  if (state.payment === "contanti" && state.changeNote){
-    msg += `💵 Resto: ${state.changeNote}\n`;
-  }
-  msg += `\n`;
-  msg += `*Ordine:*\n`;
-  lines.forEach(l => {
-    msg += `• ${l.qty}× ${l.label}`;
-    if (l.sub) msg += ` _(${l.sub})_`;
-    msg += ` — ${fmt(l.unit*l.qty)}\n`;
-  });
-  if (state.mode === "consegna"){
-    msg += `• Spese di consegna — ${fmt(DELIVERY_FEE)}\n`;
-  }
-  msg += `\n*Totale: ${fmt(total)}*`;
-  if (state.note) msg += `\n\n📝 _Note:_ ${state.note}`;
-  msg += `\n\n— inviato dal menu online —`;
-  return msg;
-}
-function buildWaLink(lines,total){
-  const text = encodeURIComponent(buildOrderMessage(lines,total));
-  return `https://wa.me/${CONFIG.phone}?text=${text}`;
-}
-
-/* Validation feedback on WhatsApp button tap */
-$("#waBtn").addEventListener("click", (e) => {
-  if ($("#waBtn").getAttribute("aria-disabled") === "true"){
-    e.preventDefault();
-    if (buildCartLines().length === 0) return;
-    // Address missing
-    if (state.mode === "consegna" && state.address.length < 5){
-      const box = $("#addressBox");
-      const warn = $("#addressWarn");
-      box.classList.add("error");
-      warn.classList.add("show");
-      box.scrollIntoView({behavior:"smooth", block:"center"});
-      $("#address").focus();
-      return;
-    }
-    // Time missing
-    if (state.timing === "dopo" && (!state.timeWhen || state.timeWhen.length < 4)){
-      const box = $("#timeBox");
-      const warn = $("#timeWarn");
-      box.classList.add("error");
-      warn.classList.add("show");
-      box.scrollIntoView({behavior:"smooth", block:"center"});
-      $("#timeWhen").focus();
-      return;
-    }
-  }
-});
-
-/* ============== SHRINK-ON-SCROLL HEADER ==============
-   Uses IntersectionObserver on a 50px sentinel at the top of the page.
-   This is immune to scroll oscillation: shrink state is bound to whether
-   the sentinel is in view, NOT to the live scrollY value (which changes
-   as the header itself resizes — causing infinite loops on some devices). */
-(function setupShrinkHeader(){
-  const header = document.querySelector("header.top");
-  const sentinel = document.getElementById("scrollSentinel");
-  if (!header || !sentinel) return;
-
-  if ("IntersectionObserver" in window){
-    const io = new IntersectionObserver((entries) => {
-      // When the sentinel leaves the viewport (scrolled past) → shrink.
-      // When it comes back into view → expand.
-      entries.forEach(entry => {
-        if (entry.isIntersecting){
-          header.classList.remove("shrunk");
-        } else {
-          header.classList.add("shrunk");
-        }
-      });
-    }, { threshold: 0, rootMargin: "0px" });
-    io.observe(sentinel);
-  } else {
-    // Fallback for very old browsers: simple scroll handler with wide hysteresis
-    let ticking = false;
-    function update(){
-      const y = window.scrollY || window.pageYOffset;
-      if (y > 80) header.classList.add("shrunk");
-      else if (y < 10) header.classList.remove("shrunk");
-      ticking = false;
-    }
-    window.addEventListener("scroll", () => {
-      if (!ticking){ window.requestAnimationFrame(update); ticking = true; }
-    }, { passive: true });
-  }
-})();
-
-/* ============== INIT ============== */
-renderBurgers();
-renderIngredients();
-updateCustomPrice();
-renderRowList("#sides",  SIDES,  state.sides);
-renderRowList("#drinks", DRINKS, state.drinks);
-renderSauces();
-renderBiscuit();
-renderPattyciok();
-updatePattyciokPrice();
-renderMilkshake();
-updateMilkshakePrice();
-renderCart();
-</script>
+<script src="assets/app.js" defer></script>
 </body>
 </html>

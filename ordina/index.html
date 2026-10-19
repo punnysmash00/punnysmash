@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Punny Smash · Ordina</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fdf6ec;
+    --paper:#fffaf2;
+    --ink:#1a1410;
+    --ink-soft:#4a3f37;
+    --accent:#e94e1b;
+    --accent-deep:#b8390f;
+    --line:#1a1410;
+    --muted:#8a7a6b;
+    --ok:#25D366;
+    --ok-deep:#128C7E;
+    --shadow: 0 2px 0 var(--ink);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:16px;line-height:1.4}
+  body{
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(233,78,27,.06), transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(233,78,27,.05), transparent 40%);
+    min-height:100vh;
+    padding-bottom:120px;
+  }
+
+  /* Menu intro banner */
+  .menu-intro{
+    background:var(--paper);
+    border:2px solid var(--ink);
+    border-radius:14px;
+    padding:14px 16px;
+    margin:14px 0 4px;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .menu-intro h2{
+    font-family:'Archivo Black',sans-serif;
+    font-size:26px;
+    margin:0 0 6px;
+    letter-spacing:.5px;
+    line-height:1;
+    text-align:center;
+    text-transform:uppercase;
+    color:var(--ink);
+  }
+  .menu-intro h2 .amp{
+    color:var(--accent);
+    font-size:32px;
+    vertical-align:-2px;
+  }
+  .menu-intro .specs{
+    color:var(--accent);
+    font-family:'Archivo Black',sans-serif;
+    text-transform:uppercase;
+    font-size:11.5px;
+    letter-spacing:.3px;
+    line-height:1.35;
+    margin-top:6px;
+  }
+  .menu-intro .specs p{margin:2px 0;display:flex;align-items:flex-start;gap:6px}
+  .menu-intro .specs p::before{
+    content:"";
+    width:8px;height:2px;
+    background:var(--accent);
+    flex-shrink:0;
+    margin-top:8px;
+  }
+  header.top{
+    padding:14px 18px;
+    border-bottom:2px solid var(--ink);
+    background:var(--paper);
+    position:sticky; top:0; z-index:10;
+    transition: padding .25s ease;
+  }
+  header.top.shrunk{
+    padding:8px 18px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;transition: gap .25s ease}
+  header.top.shrunk .brand{gap:10px}
+  .brand-logo{display:block;
+    width:108px;height:108px;border-radius:50%;
+    overflow:hidden;border:2px solid var(--ink);
+    box-shadow: var(--shadow);
+    background:var(--paper);flex-shrink:0;
+    transition: width .25s ease, height .25s ease;
+  }
+  header.top.shrunk .brand-logo{
+    width:50px;height:50px;
+  }
+  .brand-logo img{width:100%;height:100%;object-fit:cover;display:block}
+  .brand-text{display:flex;flex-direction:column;justify-content:center;min-width:0;flex:1}
+  .brand-scritta{
+    height:95px;
+    width:auto;
+    max-width:100%;
+    display:block;
+    object-fit:contain;
+    object-position:left center;
+    transition: height .25s ease;
+  }
+  header.top.shrunk .brand-scritta{
+    height:40px;
+  }
+
+  /* Sections */
+  main{padding:18px}
+  h2.section-title{
+    font-family:'Archivo Black',sans-serif;
+    font-size:22px;
+    margin:28px 0 14px;
+    letter-spacing:.5px;line-height:1;
+    background:var(--ink);
+    color:var(--paper);
+    border:2px solid var(--ink);
+    border-radius:10px;
+    padding:10px 14px;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    box-shadow: 3px 3px 0 var(--accent);
+    text-transform:uppercase;
+  }
+  h2.section-title em{
+    font-style:normal;color:var(--accent);
+    font-size:11px;
+    font-family:'JetBrains Mono',monospace;
+    letter-spacing:1.5px;
+    background:var(--paper);
+    padding:4px 8px;
+    border-radius:6px;
+    white-space:nowrap;
+  }
+
+  /* Burger cards with photo */
+  .burger{
+    background:var(--paper);border:2px solid var(--ink);border-radius:14px;
+    padding:0;margin-bottom:14px;
+    box-shadow: 4px 4px 0 var(--ink);
+    position:relative;overflow:hidden;
+    display:flex;flex-direction:row;
+    transition:transform .15s ease;
+  }
+  .burger.selected{background:#fff3e6;transform:translate(-2px,-2px);box-shadow: 6px 6px 0 var(--accent)}
+  .burger-photo{
+    width:110px;min-width:110px;
+    background:#f0e6d8;position:relative;overflow:hidden;
+    border-right:2px solid var(--ink);
+  }
+  .burger-photo img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0}
+  .burger-photo .ph-placeholder{
+    width:100%;height:100%;position:absolute;inset:0;
+    display:grid;place-items:center;
+    background:repeating-linear-gradient(45deg, #f0e6d8, #f0e6d8 8px, #e8dcc8 8px, #e8dcc8 16px);
+    color:var(--muted);font-family:'Archivo Black',sans-serif;font-size:11px;text-align:center;padding:6px;
+  }
+  .burger-body{flex:1;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+  .burger-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .burger-name{font-family:'Archivo Black',sans-serif;font-size:17px;line-height:1.05;margin:0;text-transform:uppercase}
+  .burger-price{font-family:'Archivo Black',sans-serif;font-size:18px;color:var(--accent);white-space:nowrap}
+  .burger-desc{font-size:12.5px;color:var(--ink-soft);margin:6px 0 10px;line-height:1.4}
+  .burger-controls{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .qty{display:inline-flex;align-items:center;border:2px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--paper)}
+  .qty button{width:32px;height:32px;border:0;background:transparent;font-family:'Archivo Black',sans-serif;font-size:16px;color:var(--ink);cursor:pointer}
+  .qty button:active{background:var(--accent);color:#fff}
+  .qty span{min-width:24px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600}
+  .add-btn{background:var(--ink);color:var(--paper);border:0;border-radius:999px;padding:8px 12px;font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;text-transform:uppercase}
+  .add-btn:active{background:var(--accent)}
+
+  @media (max-width:380px){
+    .burger-photo{width:96px;min-width:96px}
+    .burger-name{font-size:15px}
+    .burger-price{font-size:16px}
+  }
+
+  /* Composer */
+  .composer{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:14px;box-shadow:4px 4px 0 var(--ink)}
+  .composer h3{font-family:'Archivo Black',sans-serif;font-size:18px;margin:0 0 4px;text-transform:uppercase}
+  .composer .hint{font-size:12px;color:var(--ink-soft);margin-bottom:12px}
+  .ingredients{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;
+    border:2px solid var(--ink);background:var(--paper);
+    border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;
+    user-select:none;
+  }
+  .chip.on{background:var(--accent);color:#fff;border-color:var(--accent-deep)}
+  .chip.disabled{opacity:.35;cursor:not-allowed}
+  .chip .x{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.7}
+  .composer-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px}
+  .composer-foot .price{font-family:'Archivo Black',sans-serif;font-size:22px}
+  .composer-foot .price small{font-family:'Bricolage Grotesque',sans-serif;font-size:11px;font-weight:600;color:var(--ink-soft);display:block;line-height:1;margin-bottom:2px}
+
+  /* Sides / drinks rows with photo */
+  .row-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed rgba(26,20,16,.18)}
+  .row-item:last-child{border-bottom:0}
+  .row-photo{
+    width:50px;height:50px;border-radius:10px;
+    border:2px solid var(--ink);overflow:hidden;
+    background:#f0e6d8;flex-shrink:0;position:relative;
+  }
+  .row-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .row-photo .ph-placeholder{
+    width:100%;height:100%;position:absolute;inset:0;
+    background:repeating-linear-gradient(45deg, #f0e6d8, #f0e6d8 6px, #e8dcc8 6px, #e8dcc8 12px);
+  }
+  .row-main{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+  .row-name{font-size:15px;font-weight:600;min-width:0}
+  .row-name small{display:block;font-size:11px;color:var(--ink-soft);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+  .row-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .row-price{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-soft)}
+  .card-block{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:6px 14px;box-shadow:4px 4px 0 var(--ink)}
+
+  .sauces-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;padding-bottom:10px}
+  .sauces-grid .chip{padding:6px 10px;font-size:12px}
+
+  .note-box{background:var(--paper);border:2px dashed var(--ink);border-radius:14px;padding:12px}
+  .note-box label{display:block;font-family:'Archivo Black',sans-serif;font-size:13px;margin-bottom:6px;text-transform:uppercase}
+  .note-box textarea, .note-box input{width:100%;border:0;background:transparent;font-family:inherit;font-size:14px;resize:none;outline:none;color:var(--ink);padding:0}
+
+  /* Toggle rows (mode / payment) */
+  .toggle-row{display:flex;gap:8px;margin-top:8px}
+  .toggle-row button{
+    flex:1;padding:14px 8px;border:2px solid var(--ink);background:var(--paper);
+    font-family:'Archivo Black',sans-serif;font-size:13px;border-radius:10px;cursor:pointer;
+    text-transform:uppercase;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+  }
+  .toggle-row button .icon{font-size:20px;line-height:1}
+  .toggle-row button.on{background:var(--ink);color:var(--paper)}
+  .toggle-row button.on.card{background:var(--accent);color:#fff;border-color:var(--accent-deep)}
+
+  .pay-hint{
+    margin-top:8px;font-size:12px;color:var(--ink-soft);
+    background:#fff3e6;border:1px dashed var(--accent);
+    padding:8px 12px;border-radius:10px;display:none;
+  }
+  .pay-hint.show{display:block}
+
+  /* Required field indicator */
+  .note-box.required label::after{
+    content:" *";
+    color:var(--accent);
+    font-size:16px;
+  }
+  .note-box.error{
+    border-color:var(--accent);
+    border-style:solid;
+    background:#fff3e6;
+    animation: shake .3s ease-in-out;
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-4px)}
+    75%{transform:translateX(4px)}
+  }
+  .field-warn{
+    color:var(--accent-deep);
+    font-size:11px;
+    font-weight:600;
+    margin-top:6px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    display:none;
+  }
+  .field-warn.show{display:block}
+
+  /* Cart */
+  .cart-list{margin:8px 0 0}
+  .cart-line{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;font-size:14px;padding:8px 0;border-bottom:1px dashed rgba(26,20,16,.15)}
+  .cart-line:last-child{border-bottom:0}
+  .cart-line .lname{font-weight:600;flex:1;min-width:0}
+  .cart-line .lname small{display:block;font-weight:400;color:var(--ink-soft);font-size:12px;line-height:1.3;margin-top:2px}
+  .cart-line .lprice{font-family:'JetBrains Mono',monospace;white-space:nowrap}
+  .cart-line button{border:0;background:transparent;color:var(--accent-deep);font-size:18px;cursor:pointer;padding:0 4px}
+  .cart-line.delivery-line{color:var(--ink-soft);font-style:italic}
+  .cart-line.delivery-line .lname::before{content:"🛵 ";font-style:normal}
+  .empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:14px 0}
+
+  /* Sticky checkout */
+  .checkout-bar{
+    position:fixed;left:0;right:0;bottom:0;
+    background:var(--paper);border-top:2px solid var(--ink);
+    padding:12px 14px calc(12px + env(safe-area-inset-bottom));
+    display:flex;align-items:center;gap:10px;z-index:20;
+    box-shadow: 0 -6px 14px rgba(0,0,0,.06);
+  }
+  .checkout-total{flex:1;line-height:1.1}
+  .checkout-total small{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:1px;display:block}
+  .checkout-total b{font-family:'Archivo Black',sans-serif;font-size:24px}
+  .wa-btn{
+    background:var(--ok);color:#fff;border:2px solid var(--ink);
+    padding:14px 18px;border-radius:999px;font-family:'Archivo Black',sans-serif;font-size:14px;
+    display:inline-flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;
+    text-transform:uppercase;letter-spacing:.5px;
+    box-shadow:3px 3px 0 var(--ink);
+  }
+  .wa-btn[aria-disabled="true"]{opacity:.4;cursor:not-allowed;box-shadow:none;pointer-events:none}
+  .wa-btn svg{width:18px;height:18px;fill:#fff}
+
+  footer{padding:16px;text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<div id="scrollSentinel" aria-hidden="true" style="position:absolute;top:0;left:0;width:1px;height:50px;pointer-events:none"></div>
+
+<header class="top">
+  <div class="brand">
+    <a class="brand-logo" href="../" aria-label="Torna al sito Punny Smash">
+      <img src="logo.png" alt="Punny Smash">
+    </a>
+    <div class="brand-text">
+      <img src="scritta.png" alt="Punny Smash" class="brand-scritta">
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="menu-intro">
+    <h2>Food <span class="amp">&amp;</span> Beverage</h2>
+    <div class="specs">
+      <p>Potato bun</p>
+      <p>Double beef/pork patty smashed: due dischi di carne di manzo/maiale (100g × 2) schiacciati e reazione Maillard</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Burger <em>// smash burgers</em></h2>
+  <div id="burgers"></div>
+
+  <h2 class="section-title">Componilo tu <em>// custom</em></h2>
+  <div class="composer">
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">
+      <div class="row-photo" style="width:64px;height:64px;border-radius:12px"><img src="img/componilotu.jpeg" alt="Componilo tu" onerror="this.parentNode.innerHTML='<div class=ph-placeholder>Componilo tu</div>'"></div>
+      <div style="flex:1;min-width:0">
+        <h3 style="margin:0">Crea il tuo smash</h3>
+        <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Base 3,00 € (potato bun). Aggiungi carne, formaggi, salse e contorni a scelta.</div>
+      </div>
+    </div>
+    <div class="ingredients" id="ingredients"></div>
+    <div class="composer-foot">
+      <div class="price">
+        <small>Totale custom</small>
+        <span id="customPrice">3,00 €</span>
+      </div>
+      <button class="add-btn" id="addCustom">Aggiungi all'ordine</button>
+    </div>
+  </div>
+
+  <h2 class="section-title">Fritti <em>// sides</em></h2>
+  <div class="card-block" id="sides"></div>
+
+  <h2 class="section-title">Salse <em>// dip pot 0,50 €</em></h2>
+  <div class="card-block">
+    <div class="hint" style="padding:8px 0;font-size:12px;color:var(--ink-soft)">Tocca per aggiungere · tieni premuto per togliere</div>
+    <div class="sauces-grid" id="sauces"></div>
+  </div>
+
+  <h2 class="section-title">Bibite <em>// drinks</em></h2>
+  <div class="card-block" id="drinks"></div>
+
+  <!-- Milkshake configurator -->
+  <div class="composer" style="margin-top:14px">
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">
+      <div class="row-photo" style="width:64px;height:64px;border-radius:12px"><img src="img/punnymilkshake.jpeg" alt="Punny Milkshake" onerror="this.parentNode.innerHTML='<div class=ph-placeholder>Punny Milkshake</div>'"></div>
+      <div style="flex:1;min-width:0">
+        <h3 style="margin:0">Punny Milkshake</h3>
+        <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Milkshake artigianale, scegli base e topping.</div>
+      </div>
+    </div>
+    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:10px 0 6px;letter-spacing:.5px">Base</div>
+    <div class="ingredients" id="milkshakeBase"></div>
+    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Topping <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none">(opzionali)</span></div>
+    <div class="ingredients" id="milkshakeToppings"></div>
+    <div class="composer-foot">
+      <div class="price">
+        <small>Totale milkshake</small>
+        <span id="milkshakePrice">3,00 €</span>
+      </div>
+      <button class="add-btn" id="addMilkshake">Aggiungi all'ordine</button>
+    </div>
+  </div>
+
+  <h2 class="section-title">Dolci <em>// desserts</em></h2>
+
+  <!-- Punny Biscuit (simple row) -->
+  <div class="card-block" id="biscuitRow" style="margin-bottom:14px"></div>
+
+  <!-- Pattyciok configurator -->
+  <div class="composer">
+    <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">
+      <div class="row-photo" style="width:64px;height:64px;border-radius:12px"><img id="pattyciokPhoto" src="img/punnypattycioknutella.jpg" alt="Punny Pattyciok" onerror="this.parentNode.innerHTML='<div class=ph-placeholder>Punny Pattyciok</div>'"></div>
+      <div style="flex:1;min-width:0">
+        <h3 style="margin:0">Punny Pattyciok</h3>
+        <div style="font-size:12px;color:var(--ink-soft);margin-top:4px">Potato bun farcito, scegli farcitura e gusto.</div>
+      </div>
+    </div>
+    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:10px 0 6px;letter-spacing:.5px">Farcitura</div>
+    <div class="ingredients" id="pattyciokFilling"></div>
+    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Gusto <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none;letter-spacing:0">(uno o più)</span></div>
+    <div class="ingredients" id="pattyciokFlavour"></div>
+    <div style="font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin:12px 0 6px;letter-spacing:.5px">Topping <span style="font-weight:400;color:var(--ink-soft);font-size:11px;text-transform:none">(opzionali)</span></div>
+    <div class="ingredients" id="pattyciokToppings"></div>
+    <div class="composer-foot">
+      <div class="price">
+        <small>Totale pattyciok</small>
+        <span id="pattyciokPrice">3,00 €</span>
+      </div>
+      <button class="add-btn" id="addPattyciok">Aggiungi all'ordine</button>
+    </div>
+  </div>
+
+  <h2 class="section-title">Modalità <em>// ritiro</em></h2>
+  <div class="toggle-row" id="modeToggle">
+    <button data-mode="consegna" class="on"><span class="icon">🛵</span>Consegna</button>
+    <button data-mode="ritiro"><span class="icon">🥡</span>Ritiro</button>
+  </div>
+
+  <div id="addressWrap" style="margin-top:10px">
+    <div class="note-box required" id="addressBox">
+      <label>Indirizzo di consegna</label>
+      <input id="address" placeholder="Via, civico, città (es. Via Roma 12, Cava de' Tirreni)" autocomplete="street-address" />
+      <div class="field-warn" id="addressWarn">⚠ Inserisci l'indirizzo per finalizzare l'ordine</div>
+    </div>
+    <div class="note-box" id="riderBox" style="margin-top:10px">
+      <label>Note per il rider <span style="font-weight:400;color:var(--ink-soft);font-size:11px;letter-spacing:.3px">(opzionale)</span></label>
+      <textarea id="riderNote" rows="2" placeholder="es. piano 3, citofono Rossi, scala B"></textarea>
+    </div>
+  </div>
+
+  <h2 class="section-title">Orario <em>// quando</em></h2>
+  <div class="toggle-row" id="timeToggle">
+    <button data-time="adesso" class="on"><span class="icon">⚡</span>Adesso</button>
+    <button data-time="dopo"><span class="icon">🕒</span>Dopo</button>
+  </div>
+  <div id="timeWrap" style="display:none;margin-top:10px">
+    <div class="note-box required" id="timeBox">
+      <label>Orario richiesto</label>
+      <input id="timeWhen" type="time" />
+      <div class="field-warn" id="timeWarn">⚠ Inserisci l'orario per finalizzare l'ordine</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Pagamento <em>// metodo</em></h2>
+  <div class="toggle-row" id="payToggle">
+    <button data-pay="contanti" class="on"><span class="icon">💶</span>Contanti</button>
+    <button data-pay="carta"><span class="icon">💳</span>Carta</button>
+  </div>
+  <div class="pay-hint" id="payHint">Il locale porterà il POS al momento della consegna.</div>
+  <div id="changeWrap" style="margin-top:10px">
+    <div class="note-box">
+      <label>Serve resto? <span style="font-weight:400;color:var(--ink-soft);font-size:11px;letter-spacing:.3px">(opzionale)</span></label>
+      <textarea id="changeNote" rows="2" placeholder="es. pago con 50€, serve resto da 20€"></textarea>
+    </div>
+  </div>
+
+  <h2 class="section-title">Note <em>// opzionali</em></h2>
+  <div class="note-box">
+    <label>Aggiungi una nota (allergie, cottura, ecc.)</label>
+    <textarea id="note" rows="2" placeholder="es. il cheeseburger senza cipolla, grazie"></textarea>
+  </div>
+
+  <h2 class="section-title">Il tuo ordine <em>// riepilogo</em></h2>
+  <div class="card-block">
+    <div class="cart-list" id="cartList">
+      <div class="empty">Nessun articolo selezionato</div>
+    </div>
+  </div>
+
+</main>
+
+<div class="checkout-bar">
+  <div class="checkout-total">
+    <small>Totale</small>
+    <b id="grandTotal">0,00 €</b>
+  </div>
+  <a href="#" class="wa-btn" id="waBtn" aria-disabled="true">
+    <svg viewBox="0 0 32 32"><path d="M16 .5C7.4.5.5 7.4.5 16c0 2.8.7 5.5 2.1 7.9L.5 31.5l7.8-2c2.3 1.3 4.9 1.9 7.7 1.9 8.6 0 15.5-6.9 15.5-15.5S24.6.5 16 .5zm0 28.3c-2.5 0-4.9-.7-7-2l-.5-.3-4.6 1.2 1.2-4.5-.3-.5c-1.4-2.2-2.1-4.7-2.1-7.2 0-7.2 5.9-13.1 13.1-13.1 7.2 0 13.1 5.9 13.1 13.1 0 7.3-5.9 13.3-13.2 13.3zm7.2-9.9c-.4-.2-2.3-1.1-2.7-1.3-.4-.1-.6-.2-.9.2-.3.4-1 1.3-1.3 1.6-.2.3-.5.3-.9.1-.4-.2-1.7-.6-3.2-2-1.2-1-1.9-2.3-2.2-2.7-.2-.4 0-.6.2-.8.2-.2.4-.5.6-.7.2-.2.3-.4.4-.7.1-.3.1-.5 0-.7-.1-.2-.9-2.2-1.3-3-.3-.8-.7-.7-.9-.7h-.8c-.3 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.2 0 1.9 1.4 3.7 1.6 4 .2.3 2.7 4.1 6.5 5.8.9.4 1.6.6 2.2.8.9.3 1.7.2 2.4.1.7-.1 2.3-.9 2.7-1.9.3-.9.3-1.7.2-1.9-.1-.2-.4-.3-.8-.5z"/></svg>
+    Ordina su WhatsApp
+  </a>
+</div>
+
+<footer>Punny Smash · ordini via WhatsApp · <a href="../" style="color:inherit">Torna al sito</a></footer>
+
+<script>
+/* ============== CONFIG ============== */
+const CONFIG = {
+  phone: "393520164365",     // numero WhatsApp del locale (formato internazionale, senza + né 00)
+  shopName: "Punny Smash",
+  currency: "€"
+};
+
+/* ============== MENU ============== */
+const DELIVERY_FEE = 2.50;
+/* In "photo" inserisci il path al file immagine.
+   Se il file non esiste, viene mostrato un placeholder a strisce. */
+const BURGERS = [
+  { id:"cheese",   name:"Cheeseburger",        price:8.00, photo:"img/cheesburger.jpeg",        desc:"Cheddar, carne x2, salsa smash" },
+  { id:"bacon",    name:"Cheeseburger Bacon",  price:8.50, photo:"img/cheesburgerbacon.jpeg",   desc:"Cheddar, carne x2, salsa smash, bacon" },
+  { id:"punny",    name:"Punny Smash",         price:9.00, photo:"img/punnysmash.jpg",          desc:"Cheddar, carne x2, salsa smash, bacon, cetriolini pickled, cipolla caramellata" },
+  { id:"italian",  name:"Italian Smash",       price:8.50, photo:"img/italiansmash.jpeg",       desc:"Provola, salsa parmigiano, lattuga, pomodoro, carne x2" },
+  { id:"spicy",    name:"Spicy Smash",         price:8.50, photo:"img/spicysmash.jpeg",         desc:"Salsa piccante hot, lattuga, pomodoro, carne x2, cheddar" },
+  { id:"veggie",   name:"Punny Veggie",        price:8.50, photo:"img/punnyveggie.jpeg",        desc:"Uovo fried, salsa parmigiano, provola smoked, cipolle caramellate, cetriolini pickled, lattuga, pomodoro, cipolle crunchy fried" },
+  { id:"chicken",  name:"Punny Chicken",       price:8.50, photo:"img/punnychicken.jpeg",       desc:"Pollo fritto croccante succoso, bacon, lattuga, pomodoro, mayo soia teriyaki" },
+];
+
+const CUSTOM_BASE = 3.00;
+const INGREDIENTS = [
+  { id:"carne",     name:"Carne x2 Patty Smashed Beef/Pork", price:4.00 },
+  { id:"pollo",     name:"Pollo Crunchy Fried",              price:4.00 },
+  { id:"bacon",     name:"Bacon",                            price:1.00 },
+  { id:"pickled",   name:"Cetriolini Pickled",               price:0.50 },
+  { id:"cheddar",   name:"Cheddar Fette",                    price:0.50 },
+  { id:"cipolla",   name:"Cipolla Caramellata",              price:0.50 },
+  { id:"lattuga",   name:"Lattuga",                          price:0.50 },
+  { id:"pomodoro",  name:"Pomodoro Fette",                   price:0.50 },
+  { id:"parmi",     name:"Salsa Parmigiano",                 price:0.50 },
+  { id:"provola",   name:"Provola Smoked",                   price:0.50 },
+  { id:"uovo",      name:"Uovo Fried",                       price:0.50 },
+  { id:"ketchup",   name:"Ketchup",                          price:0.50 },
+  { id:"mayo",      name:"Maionese",                         price:0.50 },
+  { id:"sCheddar",  name:"Salsa Cheddar",                    price:0.50 },
+  { id:"hot",       name:"Salsa Piccante Hot",               price:0.50 },
+  { id:"smash",     name:"Salsa Smash",                      price:0.50 },
+  { id:"patClass",  name:"Patatine Classic Gialle Fried",    price:0.50 },
+  { id:"patDolci",  name:"Patate Arancioni Dolci Fried",     price:0.50 },
+  { id:"teriyaki",  name:"Mayo Soia Teriyaki",               price:0.50 },
+  { id:"cipCrunch", name:"Cipolla Crunchy Fried",            price:0.50 },
+  { id:"bbq",       name:"Salsa BBQ",                        price:0.50 },
+  { id:"caesar",    name:"Salsa Caesar",                     price:0.50 },
+  { id:"curry",     name:"Salsa Curry & Mango",              price:0.50 },
+  { id:"senape",    name:"Salsa Senape & Miele",             price:0.50 },
+  { id:"sweet",     name:"Salsa Sweet & Sour",               price:0.50 },
+];
+
+const SIDES = [
+  { id:"sweet",   name:"Patate dolci",          subtitle:"Sweet potatoes", price:3.50, photo:"img/patatinedolci.jpeg" },
+  { id:"classic", name:"Patate classic stick",  subtitle:"",               price:3.00, photo:"img/patatinegialle.jpeg" },
+  { id:"nuggets", name:"Chicken Nuggets",       subtitle:"",               price:4.50, photo:"img/chickennuggets.jpeg" },
+];
+
+const SAUCES = [
+  "Maionese","Ketchup","Salsa Cesar","Curry & Mango","Senape e miele",
+  "Sweet & Sour","BBQ","Salsa piccante hot","Salsa smash","Salsa cheddar","Mayo soia teriyaki"
+];
+const SAUCE_PRICE = 0.50;
+
+const DRINKS = [
+  { id:"coke",   name:"Coca Cola vetro",       price:2.50, photo:"img/coca-cola.jpg" },
+  { id:"cokez",  name:"Coca Cola Zero vetro",  price:2.50, photo:"img/coca-cola-zero.jpg" },
+  { id:"acqua",  name:"Acqua liscia",          price:1.00, photo:"img/acqua-liscia.jpg" },
+  { id:"acquaf", name:"Acqua frizzante",       price:1.00, photo:"img/acqua-frizzante.jpg" },
+  { id:"birra5", name:"Birra vetro 5°",        price:3.00, photo:"img/birra-5.jpg" },
+  { id:"birra8", name:"Birra vetro 8°",        price:3.50, photo:"img/birra-8.jpg" },
+];
+
+/* Punny Pattyciok: base price 3€, you pick filling type + flavour, plus optional toppings */
+const PATTYCIOK = {
+  id:"pattyciok",
+  name:"Punny Pattyciok",
+  basePrice: 3.00,
+  photo:"img/punnypattycioknutella.jpg",  // default shown when no flavour selected
+  desc:"Potato bun farcito con disco fresco o crema spalmabile al cioccolato",
+  fillings: [
+    { id:"disco",  name:"Disco fresco",      price:1.00 },
+    { id:"crema",  name:"Crema spalmabile",  price:0.50 },
+  ],
+  flavours: [
+    { id:"nutella",  name:"Nutella",             photo:"img/punnypattycioknutella.jpg" },
+    { id:"fondente", name:"Cioccolato Fondente", photo:"img/punnypattyciokfondente.jpeg" },
+    { id:"bianco",   name:"Cioccolato Bianco",   photo:"img/punnypattyciokbianco.jpeg" },
+  ],
+  toppings: [
+    { id:"nocciole",  name:"Granella di Nocciole",    price:0.50 },
+    { id:"panna",     name:"Panna Montata",           price:0.50 },
+    { id:"cialda",    name:"Cialda Biscotto Croccante", price:0.50 },
+    { id:"scaglie",   name:"Scaglie di Cioccolato",   price:0.50 },
+    { id:"frutti",    name:"Frutti Rossi",            price:1.00 },
+    { id:"maldon",    name:"Cristalli di sale Maldon", price:0.50 },
+  ],
+};
+
+/* Punny Biscuit: single fixed item */
+const PUNNY_BISCUIT = {
+  id:"biscuit",
+  name:"Punny Biscuit",
+  price:3.00,
+  photo:"img/punnybiscuit.jpeg",
+  desc:"Biscotto ricoperto di cioccolato",
+};
+
+/* Punny Milkshake */
+const MILKSHAKE = {
+  id:"milkshake",
+  name:"Punny Milkshake",
+  photo:"img/punnymilkshake.jpeg",
+  desc:"Milkshake artigianale",
+  bases: [
+    { id:"fiordilatte",  name:"Fiordilatte",                 price:3.00 },
+    { id:"fiordi-cioc",  name:"Fiordilatte e Cioccolato",    price:3.50 },
+  ],
+  toppings: [
+    { id:"panna",     name:"Panna Montata",            price:0.50 },
+    { id:"scaglie",   name:"Scaglie di Cioccolato",    price:0.50 },
+    { id:"maldon",    name:"Cristalli di sale Maldon", price:0.50 },
+    { id:"frutti",    name:"Frutti Rossi",             price:1.00 },
+    { id:"cialda",    name:"Cialda Biscotto Croccante", price:0.50 },
+    { id:"nocciole",  name:"Granella di Nocciole",     price:0.50 },
+  ],
+};
+
+/* ============== STATE ============== */
+const state = {
+  burgers: {}, custom: [], customSelection: new Set(),
+  sides: {}, sauces: {}, drinks: {},
+  biscuit: 0,
+  pattyciok: [],     // array of configured items: {filling, flavour, toppings:[], price}
+  milkshakes: [],    // array of configured items: {base, toppings:[], price}
+  mode: "consegna", address: "", riderNote: "",
+  timing: "adesso", timeWhen: "",
+  payment: "contanti", changeNote: "",
+  note: "",
+};
+
+/* ============== UTILS ============== */
+const fmt = n => n.toFixed(2).replace(".",",") + " " + CONFIG.currency;
+const $ = sel => document.querySelector(sel);
+const el = (tag, attrs={}, ...children) => {
+  const e = document.createElement(tag);
+  for (const k in attrs){
+    if (k === "class") e.className = attrs[k];
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), attrs[k]);
+    else e.setAttribute(k, attrs[k]);
+  }
+  for (const c of children){
+    if (c == null) continue;
+    e.append(c.nodeType ? c : document.createTextNode(c));
+  }
+  return e;
+};
+
+function makePhotoEl(src, alt, klass){
+  const wrap = el("div", {class:klass});
+  if (src) {
+    const img = el("img", {src:src, alt:alt});
+    img.addEventListener("error", () => {
+      wrap.innerHTML = `<div class="ph-placeholder">${alt}</div>`;
+    });
+    wrap.append(img);
+  } else {
+    wrap.innerHTML = `<div class="ph-placeholder">${alt}</div>`;
+  }
+  return wrap;
+}
+
+/* ============== BURGERS ============== */
+function renderBurgers(){
+  const c = $("#burgers"); c.innerHTML = "";
+  BURGERS.forEach(b => {
+    const qty = state.burgers[b.id] || 0;
+    const card = el("div", {class:"burger" + (qty>0?" selected":"")});
+    card.append(
+      makePhotoEl(b.photo, b.name, "burger-photo"),
+      el("div", {class:"burger-body"},
+        el("div", {class:"burger-head"},
+          el("h3", {class:"burger-name"}, b.name),
+          el("div", {class:"burger-price"}, fmt(b.price))
+        ),
+        el("div", {class:"burger-desc"}, b.desc),
+        el("div", {class:"burger-controls"},
+          el("div", {class:"qty"},
+            el("button", {onclick:()=>changeBurger(b.id,-1)}, "−"),
+            el("span", {}, String(qty)),
+            el("button", {onclick:()=>changeBurger(b.id,+1)}, "+"),
+          ),
+          el("button", {class:"add-btn", onclick:()=>changeBurger(b.id,+1)}, qty>0?"+ ancora":"Aggiungi")
+        )
+      )
+    );
+    c.append(card);
+  });
+}
+function changeBurger(id, delta){
+  state.burgers[id] = Math.max(0, (state.burgers[id]||0) + delta);
+  renderBurgers(); renderCart();
+}
+
+/* ============== CUSTOM ============== */
+function renderIngredients(){
+  const c = $("#ingredients"); c.innerHTML = "";
+  INGREDIENTS.forEach(i => {
+    const on = state.customSelection.has(i.id);
+    const chip = el("div", {
+      class:"chip"+(on?" on":""),
+      onclick:()=>{
+        if (on) state.customSelection.delete(i.id); else state.customSelection.add(i.id);
+        renderIngredients(); updateCustomPrice();
+      }
+    },
+      i.name,
+      el("span",{class:"x"},"+"+i.price.toFixed(2).replace(".",",")+CONFIG.currency)
+    );
+    c.append(chip);
+  });
+}
+function customCurrentPrice(){
+  let p = CUSTOM_BASE;
+  state.customSelection.forEach(id => {
+    const ing = INGREDIENTS.find(x=>x.id===id);
+    if (ing) p += ing.price;
+  });
+  return p;
+}
+function updateCustomPrice(){ $("#customPrice").textContent = fmt(customCurrentPrice()); }
+
+$("#addCustom").addEventListener("click", () => {
+  if (state.customSelection.size === 0){
+    if (!confirm("Vuoi aggiungere un burger base senza extra?")) return;
+  }
+  const items = [...state.customSelection].map(id => INGREDIENTS.find(x=>x.id===id));
+  state.custom.push({ ingredients: items, price: customCurrentPrice() });
+  state.customSelection.clear();
+  renderIngredients(); updateCustomPrice(); renderCart();
+});
+
+/* ============== BISCUIT (simple +/-) ============== */
+function renderBiscuit(){
+  const c = $("#biscuitRow"); c.innerHTML = "";
+  const qty = state.biscuit;
+  const row = el("div", {class:"row-item"},
+    el("div", {class:"row-main"},
+      makePhotoEl(PUNNY_BISCUIT.photo, PUNNY_BISCUIT.name, "row-photo"),
+      el("div", {class:"row-name"}, PUNNY_BISCUIT.name,
+        el("small", {}, PUNNY_BISCUIT.desc)
+      )
+    ),
+    el("div", {class:"row-right"},
+      el("span", {class:"row-price"}, fmt(PUNNY_BISCUIT.price)),
+      el("div", {class:"qty"},
+        el("button", {onclick:()=>{ state.biscuit = Math.max(0, state.biscuit-1); renderBiscuit(); renderCart(); }}, "−"),
+        el("span", {}, String(qty)),
+        el("button", {onclick:()=>{ state.biscuit += 1; renderBiscuit(); renderCart(); }}, "+"),
+      )
+    )
+  );
+  c.append(row);
+}
+
+/* ============== PATTYCIOK CONFIGURATOR ============== */
+const pattyciokSel = { filling:null, flavours:new Set(), toppings:new Set() };
+
+function pattyciokCurrentPrice(){
+  let p = PATTYCIOK.basePrice;
+  if (pattyciokSel.filling){
+    const f = PATTYCIOK.fillings.find(x=>x.id===pattyciokSel.filling);
+    if (f) p += f.price;
+  }
+  pattyciokSel.toppings.forEach(id => {
+    const t = PATTYCIOK.toppings.find(x=>x.id===id);
+    if (t) p += t.price;
+  });
+  return p;
+}
+function updatePattyciokPrice(){ $("#pattyciokPrice").textContent = fmt(pattyciokCurrentPrice()); }
+
+function renderPattyciok(){
+  // Fillings (single-select)
+  const fc = $("#pattyciokFilling"); fc.innerHTML = "";
+  PATTYCIOK.fillings.forEach(f => {
+    const on = pattyciokSel.filling === f.id;
+    fc.append(el("div", {
+      class:"chip"+(on?" on":""),
+      onclick:()=>{ pattyciokSel.filling = on ? null : f.id; renderPattyciok(); updatePattyciokPrice(); }
+    }, f.name, el("span",{class:"x"},"+"+f.price.toFixed(2).replace(".",",")+CONFIG.currency)));
+  });
+
+  // Flavours (multi-select, up to 3)
+  const fl = $("#pattyciokFlavour"); fl.innerHTML = "";
+  PATTYCIOK.flavours.forEach(f => {
+    const on = pattyciokSel.flavours.has(f.id);
+    fl.append(el("div", {
+      class:"chip"+(on?" on":""),
+      onclick:()=>{
+        if (on) pattyciokSel.flavours.delete(f.id);
+        else pattyciokSel.flavours.add(f.id);
+        renderPattyciok();
+      }
+    }, f.name));
+  });
+
+  // Update preview photo based on selected flavours:
+  //  - 0 selected → default (Nutella)
+  //  - 1 selected → that flavour's photo
+  //  - 2 or 3 selected → Nutella (default)
+  const photoEl = $("#pattyciokPhoto");
+  if (photoEl){
+    let newSrc = PATTYCIOK.photo; // default = Nutella, also used when 2+ are selected
+    if (pattyciokSel.flavours.size === 1){
+      const id = [...pattyciokSel.flavours][0];
+      const sel = PATTYCIOK.flavours.find(x=>x.id===id);
+      if (sel && sel.photo) newSrc = sel.photo;
+    }
+    if (photoEl.getAttribute("src") !== newSrc){
+      photoEl.setAttribute("src", newSrc);
+    }
+  }
+
+  // Toppings (multi-select)
+  const tc = $("#pattyciokToppings"); tc.innerHTML = "";
+  PATTYCIOK.toppings.forEach(t => {
+    const on = pattyciokSel.toppings.has(t.id);
+    tc.append(el("div", {
+      class:"chip"+(on?" on":""),
+      onclick:()=>{
+        if (on) pattyciokSel.toppings.delete(t.id); else pattyciokSel.toppings.add(t.id);
+        renderPattyciok(); updatePattyciokPrice();
+      }
+    }, t.name, el("span",{class:"x"},"+"+t.price.toFixed(2).replace(".",",")+CONFIG.currency)));
+  });
+}
+
+$("#addPattyciok").addEventListener("click", () => {
+  if (!pattyciokSel.filling){ alert("Scegli la farcitura (Disco fresco o Crema spalmabile)"); return; }
+  if (pattyciokSel.flavours.size === 0){ alert("Scegli almeno un gusto"); return; }
+  const filling = PATTYCIOK.fillings.find(x=>x.id===pattyciokSel.filling);
+  const flavours = [...pattyciokSel.flavours].map(id => PATTYCIOK.flavours.find(x=>x.id===id));
+  const toppings = [...pattyciokSel.toppings].map(id => PATTYCIOK.toppings.find(x=>x.id===id));
+  state.pattyciok.push({
+    filling, flavours, toppings, price: pattyciokCurrentPrice()
+  });
+  pattyciokSel.filling = null;
+  pattyciokSel.flavours.clear();
+  pattyciokSel.toppings.clear();
+  renderPattyciok(); updatePattyciokPrice(); renderCart();
+});
+
+/* ============== MILKSHAKE CONFIGURATOR ============== */
+const milkshakeSel = { base:null, toppings:new Set() };
+
+function milkshakeCurrentPrice(){
+  let p = 0;
+  if (milkshakeSel.base){
+    const b = MILKSHAKE.bases.find(x=>x.id===milkshakeSel.base);
+    if (b) p += b.price;
+  }
+  milkshakeSel.toppings.forEach(id => {
+    const t = MILKSHAKE.toppings.find(x=>x.id===id);
+    if (t) p += t.price;
+  });
+  return p;
+}
+function updateMilkshakePrice(){
+  const p = milkshakeCurrentPrice();
+  $("#milkshakePrice").textContent = p > 0 ? fmt(p) : "—";
+}
+
+function renderMilkshake(){
+  // Bases (single-select, required, replaces base price)
+  const bc = $("#milkshakeBase"); bc.innerHTML = "";
+  MILKSHAKE.bases.forEach(b => {
+    const on = milkshakeSel.base === b.id;
+    bc.append(el("div", {
+      class:"chip"+(on?" on":""),
+      onclick:()=>{ milkshakeSel.base = on ? null : b.id; renderMilkshake(); updateMilkshakePrice(); }
+    }, b.name, el("span",{class:"x"}, b.price.toFixed(2).replace(".",",")+CONFIG.currency)));
+  });
+  // Toppings (multi-select)
+  const tc = $("#milkshakeToppings"); tc.innerHTML = "";
+  MILKSHAKE.toppings.forEach(t => {
+    const on = milkshakeSel.toppings.has(t.id);
+    tc.append(el("div", {
+      class:"chip"+(on?" on":""),
+      onclick:()=>{
+        if (on) milkshakeSel.toppings.delete(t.id); else milkshakeSel.toppings.add(t.id);
+        renderMilkshake(); updateMilkshakePrice();
+      }
+    }, t.name, el("span",{class:"x"},"+"+t.price.toFixed(2).replace(".",",")+CONFIG.currency)));
+  });
+}
+
+$("#addMilkshake").addEventListener("click", () => {
+  if (!milkshakeSel.base){ alert("Scegli la base del milkshake"); return; }
+  const base = MILKSHAKE.bases.find(x=>x.id===milkshakeSel.base);
+  const toppings = [...milkshakeSel.toppings].map(id => MILKSHAKE.toppings.find(x=>x.id===id));
+  state.milkshakes.push({
+    base, toppings, price: milkshakeCurrentPrice()
+  });
+  milkshakeSel.base = null;
+  milkshakeSel.toppings.clear();
+  renderMilkshake(); updateMilkshakePrice(); renderCart();
+});
+
+/* ============== SIDES / DRINKS ============== */
+function renderRowList(containerId, list, stateMap){
+  const c = $(containerId); c.innerHTML = "";
+  list.forEach(item => {
+    const qty = stateMap[item.id] || 0;
+    const row = el("div", {class:"row-item"},
+      el("div", {class:"row-main"},
+        makePhotoEl(item.photo, item.name, "row-photo"),
+        el("div", {class:"row-name"}, item.name,
+          item.subtitle ? el("small", {}, item.subtitle) : null
+        )
+      ),
+      el("div", {class:"row-right"},
+        el("span", {class:"row-price"}, fmt(item.price)),
+        el("div", {class:"qty"},
+          el("button", {onclick:()=>{ stateMap[item.id] = Math.max(0,(stateMap[item.id]||0)-1); renderRowList(containerId,list,stateMap); renderCart(); }}, "−"),
+          el("span", {}, String(qty)),
+          el("button", {onclick:()=>{ stateMap[item.id] = (stateMap[item.id]||0)+1; renderRowList(containerId,list,stateMap); renderCart(); }}, "+"),
+        )
+      )
+    );
+    c.append(row);
+  });
+}
+
+/* ============== SAUCES ============== */
+function renderSauces(){
+  const c = $("#sauces"); c.innerHTML = "";
+  SAUCES.forEach(name => {
+    const qty = state.sauces[name] || 0;
+    const chip = el("div", {
+      class:"chip"+(qty>0?" on":""),
+      onclick:()=>{
+        state.sauces[name] = (state.sauces[name]||0) + 1;
+        renderSauces(); renderCart();
+      },
+      oncontextmenu:(e)=>{ e.preventDefault(); state.sauces[name] = Math.max(0,(state.sauces[name]||0)-1); renderSauces(); renderCart(); }
+    },
+      name + (qty>0 ? ` ×${qty}` : ""),
+      el("span",{class:"x"}, SAUCE_PRICE.toFixed(2).replace(".",",")+CONFIG.currency)
+    );
+    let pressTimer;
+    chip.addEventListener("touchstart", () => {
+      pressTimer = setTimeout(()=>{
+        state.sauces[name] = Math.max(0,(state.sauces[name]||0)-1);
+        renderSauces(); renderCart();
+      }, 500);
+    });
+    chip.addEventListener("touchend", () => clearTimeout(pressTimer));
+    chip.addEventListener("touchmove", () => clearTimeout(pressTimer));
+    c.append(chip);
+  });
+}
+
+/* ============== TOGGLES ============== */
+document.querySelectorAll("#modeToggle button").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("#modeToggle button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    state.mode = b.dataset.mode;
+    $("#addressWrap").style.display = state.mode === "consegna" ? "block" : "none";
+    // Clear error highlight when switching modes
+    $("#addressBox").classList.remove("error");
+    $("#addressWarn").classList.remove("show");
+    updatePayHint();
+    renderCart();
+  });
+});
+
+document.querySelectorAll("#payToggle button").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("#payToggle button").forEach(x=>{x.classList.remove("on");x.classList.remove("card");});
+    b.classList.add("on");
+    if (b.dataset.pay === "carta") b.classList.add("card");
+    state.payment = b.dataset.pay;
+    updatePayHint();
+    renderCart();
+  });
+});
+
+document.querySelectorAll("#timeToggle button").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("#timeToggle button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    state.timing = b.dataset.time;
+    $("#timeWrap").style.display = state.timing === "dopo" ? "block" : "none";
+    // Clear error when switching
+    $("#timeBox").classList.remove("error");
+    $("#timeWarn").classList.remove("show");
+    renderCart();
+  });
+});
+
+$("#timeWhen").addEventListener("input", e => {
+  state.timeWhen = e.target.value;
+  if (state.timeWhen){
+    $("#timeBox").classList.remove("error");
+    $("#timeWarn").classList.remove("show");
+  }
+  renderCart();
+});
+
+function updatePayHint(){
+  const hint = $("#payHint");
+  const changeWrap = $("#changeWrap");
+  if (state.payment === "carta"){
+    hint.classList.add("show");
+    hint.textContent = state.mode === "ritiro"
+      ? "POS disponibile in negozio al momento del ritiro."
+      : "Il rider porterà il POS alla consegna.";
+    changeWrap.style.display = "none";
+  } else {
+    hint.classList.remove("show");
+    changeWrap.style.display = "block";
+  }
+}
+
+$("#address").addEventListener("input", e => {
+  state.address = e.target.value.trim();
+  // Live-clear error state once user starts typing
+  if (state.address.length >= 5){
+    $("#addressBox").classList.remove("error");
+    $("#addressWarn").classList.remove("show");
+  }
+  renderCart();
+});
+$("#riderNote").addEventListener("input", e => { state.riderNote = e.target.value.trim(); renderCart(); });
+$("#changeNote").addEventListener("input", e => { state.changeNote = e.target.value.trim(); renderCart(); });
+$("#note").addEventListener("input", e => { state.note = e.target.value.trim(); renderCart(); });
+
+/* ============== CART ============== */
+function buildCartLines(){
+  const lines = [];
+  BURGERS.forEach(b => {
+    const q = state.burgers[b.id] || 0;
+    if (q>0) lines.push({ label:b.name, qty:q, unit:b.price, key:"burger:"+b.id });
+  });
+  state.custom.forEach((c,idx) => {
+    const ingNames = c.ingredients.map(i=>i.name).join(", ") || "base";
+    lines.push({ label:"Componilo tu", sub:ingNames, qty:1, unit:c.price, key:"custom:"+idx });
+  });
+  SIDES.forEach(s => {
+    const q = state.sides[s.id] || 0;
+    if (q>0) lines.push({ label:s.name, qty:q, unit:s.price, key:"side:"+s.id });
+  });
+  Object.entries(state.sauces).forEach(([name,q]) => {
+    if (q>0) lines.push({ label:"Salsa "+name, qty:q, unit:SAUCE_PRICE, key:"sauce:"+name });
+  });
+  DRINKS.forEach(d => {
+    const q = state.drinks[d.id] || 0;
+    if (q>0) lines.push({ label:d.name, qty:q, unit:d.price, key:"drink:"+d.id });
+  });
+  // Biscuit
+  if (state.biscuit > 0){
+    lines.push({ label:PUNNY_BISCUIT.name, qty:state.biscuit, unit:PUNNY_BISCUIT.price, key:"biscuit" });
+  }
+  // Pattyciok
+  state.pattyciok.forEach((p,idx) => {
+    const flavourNames = p.flavours.map(f=>f.name).join(" + ");
+    const parts = [p.filling.name, flavourNames];
+    if (p.toppings.length) parts.push(p.toppings.map(t=>t.name).join(", "));
+    lines.push({ label:PATTYCIOK.name, sub:parts.join(" · "), qty:1, unit:p.price, key:"pattyciok:"+idx });
+  });
+  // Milkshake
+  state.milkshakes.forEach((m,idx) => {
+    const sub = m.toppings.length ? `${m.base.name} + ${m.toppings.map(t=>t.name).join(", ")}` : m.base.name;
+    lines.push({ label:MILKSHAKE.name, sub, qty:1, unit:m.price, key:"milkshake:"+idx });
+  });
+  return lines;
+}
+
+function removeLine(key){
+  const [type, id] = key.split(":");
+  if (type === "burger") state.burgers[id] = 0;
+  else if (type === "custom") state.custom.splice(parseInt(id),1);
+  else if (type === "side") state.sides[id] = 0;
+  else if (type === "sauce") state.sauces[id] = 0;
+  else if (type === "drink") state.drinks[id] = 0;
+  else if (type === "biscuit") state.biscuit = 0;
+  else if (type === "pattyciok") state.pattyciok.splice(parseInt(id),1);
+  else if (type === "milkshake") state.milkshakes.splice(parseInt(id),1);
+  renderBurgers(); renderRowList("#sides",SIDES,state.sides); renderRowList("#drinks",DRINKS,state.drinks); renderSauces(); renderBiscuit(); renderCart();
+}
+
+function renderCart(){
+  const lines = buildCartLines();
+  const list = $("#cartList"); list.innerHTML = "";
+  let total = 0;
+  if (lines.length === 0){
+    list.append(el("div",{class:"empty"},"Nessun articolo selezionato"));
+  } else {
+    lines.forEach(l => {
+      const sub = l.unit * l.qty; total += sub;
+      list.append(el("div",{class:"cart-line"},
+        el("div",{class:"lname"}, `${l.qty}× ${l.label}`, l.sub ? el("small",{},l.sub) : null),
+        el("div",{class:"lprice"}, fmt(sub)),
+        el("button",{onclick:()=>removeLine(l.key)},"✕")
+      ));
+    });
+    // Delivery fee (consegna only)
+    if (state.mode === "consegna"){
+      total += DELIVERY_FEE;
+      list.append(el("div",{class:"cart-line delivery-line"},
+        el("div",{class:"lname"}, "Spese di consegna"),
+        el("div",{class:"lprice"}, fmt(DELIVERY_FEE)),
+      ));
+    }
+  }
+  $("#grandTotal").textContent = fmt(total);
+  const btn = $("#waBtn");
+
+  // Validation: cart non-empty + (if consegna) address provided + (if dopo) time provided
+  const needsAddress = state.mode === "consegna";
+  const addressOk = !needsAddress || state.address.length >= 5;
+  const needsTime = state.timing === "dopo";
+  const timeOk = !needsTime || (state.timeWhen && state.timeWhen.length >= 4);
+  const canOrder = total > 0 && addressOk && timeOk;
+
+  if (canOrder){
+    btn.setAttribute("aria-disabled","false");
+    btn.href = buildWaLink(lines,total);
+  } else {
+    btn.setAttribute("aria-disabled","true");
+    btn.href = "#";
+  }
+}
+
+/* ============== WHATSAPP MESSAGE ============== */
+function buildOrderMessage(lines,total){
+  const dt = new Date();
+  const stamp = dt.toLocaleString("it-IT",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});
+  let msg = `🍔 *Nuovo ordine — ${CONFIG.shopName}*\n`;
+  msg += `🕒 ${stamp}\n`;
+  if (state.mode === "ritiro"){
+    msg += `🥡 Ritiro in negozio\n`;
+  } else {
+    msg += `🛵 Consegna a domicilio\n`;
+    msg += `📍 ${state.address}\n`;
+    if (state.riderNote) msg += `🛎️ Rider: ${state.riderNote}\n`;
+  }
+  if (state.timing === "dopo" && state.timeWhen){
+    msg += `⏰ Per le ${state.timeWhen}\n`;
+  } else {
+    msg += `⚡ Subito\n`;
+  }
+  msg += `${state.payment === "carta" ? "💳" : "💶"} Pagamento: ${state.payment === "carta" ? "Carta (POS necessario)" : "Contanti"}\n`;
+  if (state.payment === "contanti" && state.changeNote){
+    msg += `💵 Resto: ${state.changeNote}\n`;
+  }
+  msg += `\n`;
+  msg += `*Ordine:*\n`;
+  lines.forEach(l => {
+    msg += `• ${l.qty}× ${l.label}`;
+    if (l.sub) msg += ` _(${l.sub})_`;
+    msg += ` — ${fmt(l.unit*l.qty)}\n`;
+  });
+  if (state.mode === "consegna"){
+    msg += `• Spese di consegna — ${fmt(DELIVERY_FEE)}\n`;
+  }
+  msg += `\n*Totale: ${fmt(total)}*`;
+  if (state.note) msg += `\n\n📝 _Note:_ ${state.note}`;
+  msg += `\n\n— inviato dal menu online —`;
+  return msg;
+}
+function buildWaLink(lines,total){
+  const text = encodeURIComponent(buildOrderMessage(lines,total));
+  return `https://wa.me/${CONFIG.phone}?text=${text}`;
+}
+
+/* Validation feedback on WhatsApp button tap */
+$("#waBtn").addEventListener("click", (e) => {
+  if ($("#waBtn").getAttribute("aria-disabled") === "true"){
+    e.preventDefault();
+    if (buildCartLines().length === 0) return;
+    // Address missing
+    if (state.mode === "consegna" && state.address.length < 5){
+      const box = $("#addressBox");
+      const warn = $("#addressWarn");
+      box.classList.add("error");
+      warn.classList.add("show");
+      box.scrollIntoView({behavior:"smooth", block:"center"});
+      $("#address").focus();
+      return;
+    }
+    // Time missing
+    if (state.timing === "dopo" && (!state.timeWhen || state.timeWhen.length < 4)){
+      const box = $("#timeBox");
+      const warn = $("#timeWarn");
+      box.classList.add("error");
+      warn.classList.add("show");
+      box.scrollIntoView({behavior:"smooth", block:"center"});
+      $("#timeWhen").focus();
+      return;
+    }
+  }
+});
+
+/* ============== SHRINK-ON-SCROLL HEADER ==============
+   Uses IntersectionObserver on a 50px sentinel at the top of the page.
+   This is immune to scroll oscillation: shrink state is bound to whether
+   the sentinel is in view, NOT to the live scrollY value (which changes
+   as the header itself resizes — causing infinite loops on some devices). */
+(function setupShrinkHeader(){
+  const header = document.querySelector("header.top");
+  const sentinel = document.getElementById("scrollSentinel");
+  if (!header || !sentinel) return;
+
+  if ("IntersectionObserver" in window){
+    const io = new IntersectionObserver((entries) => {
+      // When the sentinel leaves the viewport (scrolled past) → shrink.
+      // When it comes back into view → expand.
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          header.classList.remove("shrunk");
+        } else {
+          header.classList.add("shrunk");
+        }
+      });
+    }, { threshold: 0, rootMargin: "0px" });
+    io.observe(sentinel);
+  } else {
+    // Fallback for very old browsers: simple scroll handler with wide hysteresis
+    let ticking = false;
+    function update(){
+      const y = window.scrollY || window.pageYOffset;
+      if (y > 80) header.classList.add("shrunk");
+      else if (y < 10) header.classList.remove("shrunk");
+      ticking = false;
+    }
+    window.addEventListener("scroll", () => {
+      if (!ticking){ window.requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
+  }
+})();
+
+/* ============== INIT ============== */
+renderBurgers();
+renderIngredients();
+updateCustomPrice();
+renderRowList("#sides",  SIDES,  state.sides);
+renderRowList("#drinks", DRINKS, state.drinks);
+renderSauces();
+renderBiscuit();
+renderPattyciok();
+updatePattyciokPrice();
+renderMilkshake();
+updateMilkshakePrice();
+renderCart();
+</script>
+</body>
+</html>
